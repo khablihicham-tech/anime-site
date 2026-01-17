@@ -2,11 +2,255 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>الموقع خدام</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق الأنمي الاحترافي</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#121212;
+    color:#fff;
+    margin:0;
+    padding:0;
+}
+header {
+    background:#ff3b3f;
+    padding:20px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    box-shadow:0 4px 10px rgba(0,0,0,0.5);
+}
+/* Slider احترافي */
+.slider {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 15px;
+    perspective: 1200px; /* لإحساس 3D */
+}
+.slides {
+    display: flex;
+    transition: transform 0.8s ease-in-out;
+    cursor: grab;
+}
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    transition: transform 0.5s;
+}
+.slide img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.5s;
+}
+.slide:hover img {
+    transform: scale(1.05);
+}
+
+/* Tooltip للSlider */
+.tooltip-slider {
+    visibility: hidden;
+    background-color: rgba(0,0,0,0.8);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 10px;
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 10;
+}
+.slide:hover .tooltip-slider { visibility: visible; }
+
+/* أزرار التنقل */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.6);
+    color:#fff;
+    padding:12px;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:20px;
+    transition:0.3s;
+}
+.prev:hover, .next:hover { background-color: #ff3b3f; }
+.prev { left: 15px; }
+.next { right: 15px; }
+
+/* قائمة الأنميات */
+.anime-list {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:20px;
+}
+.anime-card {
+    background:#1e1e1e;
+    margin:10px;
+    padding:10px;
+    width:180px;
+    border-radius:12px;
+    text-align:center;
+    cursor:pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position:relative;
+}
+.anime-card:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 15px #ff3b3f;
+}
+.anime-card img {
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:10px;
+}
+.anime-card span {
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#ff3b3f;
+    padding:5px 8px;
+    border-radius:50%;
+    font-size:12px;
+}
+.add-button {
+    display:block;
+    margin:20px auto;
+    padding:12px 25px;
+    background:#28a745;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+    transition:0.3s;
+}
+.add-button:hover { background:#1fa838; }
+
+/* Responsive */
+@media(max-width:600px){
+    .slide img{ height:250px; }
+    .anime-card{ width:45%; }
+}
+</style>
 </head>
-<body style="background:#121212;color:white;font-family:Arial;text-align:center;padding-top:50px;">
-<h1>🎉 الموقع خدام بنجاح</h1>
-<p>GitHub Pages شغال 100%</p>
-<a href="anime.html" style="color:#00ff99">دخول صفحة الأنمي</a>
+<body>
+
+<header>تطبيق الأنمي الاحترافي</header>
+
+<div class="slider">
+    <div class="slides" id="slides"></div>
+    <button class="prev" onclick="prevSlide()">&#10094;</button>
+    <button class="next" onclick="nextSlide()">&#10095;</button>
+</div>
+
+<button class="add-button" onclick="askPassword()">إضافة حلقة جديدة</button>
+
+<div class="anime-list" id="animeList"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // البيانات كما هي بدون تغيير
+    let animes = JSON.parse(localStorage.getItem("animes")) || [
+        { title:"Naruto", image:"https://i.imgur.com/1O0F8E1.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/3f4c1fe9-f74b-48be-81dd-df2572a3a222", season:"الموسم 1"}] },
+        { title:"One Piece", image:"https://i.imgur.com/3zO2Z3H.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/lKfED0t0P0k", season:"الموسم 1"}] },
+        { title:"Demon Slayer", image:"https://i.imgur.com/2C1F3aK.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/xk7F6t0rQ0k", season:"الموسم 1"}] },
+        { title:"Attack on Titan", image:"https://i.imgur.com/BwR5J1p.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/a1b2c3d4", season:"الموسم 1"}] },
+        { title:"My Hero Academia", image:"https://i.imgur.com/f3E9t5N.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/y6Jf3d4", season:"الموسم 1"}] }
+    ];
+
+    const slidesContainer = document.getElementById("slides");
+
+    // -------- Slider محترف + Tooltip --------
+    function renderSlider(){
+        slidesContainer.innerHTML = '';
+        const featuredAnimes = animes.slice(0,10);
+        featuredAnimes.forEach(fa => {
+            let lastSeason = fa.episodes.length > 0 ? fa.episodes[fa.episodes.length-1].season : fa.season;
+            let lastEpisode = fa.episodes.length > 0 ? fa.episodes[fa.episodes.length-1].title : "-";
+
+            const div = document.createElement("div");
+            div.classList.add("slide");
+            div.innerHTML = `
+                <img src="${fa.image}" alt="${fa.title}">
+                <div class="tooltip-slider">${fa.title} - ${lastSeason} - ${lastEpisode}</div>
+            `;
+            div.addEventListener("click", ()=> {
+                window.location.href = `anime.html?title=${encodeURIComponent(fa.title)}`;
+            });
+            slidesContainer.appendChild(div);
+        });
+    }
+    renderSlider();
+
+    // -------- حركة Slider --------
+    let currentIndex = 0;
+    function showSlide(index=currentIndex){ slidesContainer.style.transform = `translateX(-${index*100}%)`; }
+    function nextSlide(){ currentIndex=(currentIndex+1)%Math.min(animes.length,10); showSlide(); }
+    function prevSlide(){ currentIndex=(currentIndex-1+Math.min(animes.length,10))%Math.min(animes.length,10); showSlide(); }
+    setInterval(nextSlide, 5000);
+
+    // -------- كلمة المرور --------
+    const PASSWORD = "112233";
+    window.askPassword = function(){
+        const pass = prompt("الرجاء إدخال كلمة المرور:");
+        if(pass === PASSWORD){
+            window.location.href = 'add_episode.html';
+        } else {
+            alert("كلمة المرور خاطئة! لا يمكنك الدخول.");
+        }
+    }
+
+    // -------- قائمة الأنميات مع Tooltip --------
+    const animeList = document.getElementById("animeList");
+    function renderAnimeList(){
+        animeList.innerHTML = '';
+        animes.forEach(anime=>{
+            let lastSeason = anime.episodes.length > 0 && anime.episodes[anime.episodes.length - 1].season
+                             ? anime.episodes[anime.episodes.length - 1].season
+                             : anime.season;
+            let lastEpisode = anime.episodes.length > 0 ? anime.episodes[anime.episodes.length - 1].title : "-";
+
+            const card = document.createElement("div");
+            card.classList.add("anime-card");
+            card.innerHTML = `
+                <img src="${anime.image}" alt="${anime.title}">
+                <div class="tooltip-slider">${anime.title} - ${lastSeason} - ${lastEpisode}</div>
+                <h3>${anime.title} - ${lastSeason}</h3>
+                <span>${anime.episodes.length}</span>
+            `;
+            card.addEventListener("click",()=> {
+                window.location.href = `anime.html?title=${encodeURIComponent(anime.title)}`;
+            });
+            animeList.appendChild(card);
+        });
+    }
+    renderAnimeList();
+
+    // -------- تحديث بعد إضافة حلقة جديدة --------
+    window.addEventListener('storage', function(e){
+        if(e.key === 'animes'){
+            animes = JSON.parse(localStorage.getItem("animes"));
+            renderSlider();
+            renderAnimeList();
+        }
+    });
+
+});
+</script>
+
 </body>
 </html>
