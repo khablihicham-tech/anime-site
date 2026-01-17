@@ -3,152 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تطبيق الأنمي الاحترافي</title>
+<title>الأنمي زين</title>
+
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background:#121212;
-    color:#fff;
-    margin:0;
-    padding:0;
-}
-header {
-    background:#ff3b3f;
-    padding:20px;
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    box-shadow:0 4px 10px rgba(0,0,0,0.5);
-}
-/* Slider احترافي */
-.slider {
-    position: relative;
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
-    overflow: hidden;
-    border-radius: 15px;
-    perspective: 1200px; /* لإحساس 3D */
-}
-.slides {
-    display: flex;
-    transition: transform 0.8s ease-in-out;
-    cursor: grab;
-}
-.slide {
-    min-width: 100%;
-    box-sizing: border-box;
-    position: relative;
-    transition: transform 0.5s;
-}
-.slide img {
-    width: 100%;
-    height: 450px;
-    object-fit: cover;
-    border-radius: 15px;
-    transition: transform 0.5s;
-}
-.slide:hover img {
-    transform: scale(1.05);
-}
+body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
+header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.5);}
 
-/* Tooltip للSlider */
-.tooltip-slider {
-    visibility: hidden;
-    background-color: rgba(0,0,0,0.8);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 6px 10px;
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 14px;
-    white-space: nowrap;
-    z-index: 10;
-}
-.slide:hover .tooltip-slider { visibility: visible; }
+.slider { position: relative; width: 100%; max-width: 1000px; margin: 20px auto; overflow: hidden; border-radius: 15px;}
+.slides { display:flex; transition: transform 0.8s ease-in-out;}
+.slide { min-width:100%; }
+.slide img { width:100%; height:450px; object-fit:cover; border-radius:15px; }
 
-/* أزرار التنقل */
 .prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0,0,0,0.6);
-    color:#fff;
-    padding:12px;
-    border:none;
-    border-radius:50%;
-    cursor:pointer;
-    font-size:20px;
-    transition:0.3s;
+ position:absolute; top:50%; transform:translateY(-50%);
+ background:rgba(0,0,0,0.6); color:#fff;
+ border:none; border-radius:50%; padding:10px; cursor:pointer;
 }
-.prev:hover, .next:hover { background-color: #ff3b3f; }
-.prev { left: 15px; }
-.next { right: 15px; }
+.prev{left:10px;} .next{right:10px;}
 
-/* قائمة الأنميات */
-.anime-list {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    margin:20px;
-}
+.anime-list { display:flex; flex-wrap:wrap; justify-content:center; margin:10px;}
 .anime-card {
-    background:#1e1e1e;
-    margin:10px;
-    padding:10px;
-    width:180px;
-    border-radius:12px;
-    text-align:center;
-    cursor:pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position:relative;
+ background:#1e1e1e; margin:10px; width:180px;
+ border-radius:12px; overflow:hidden; cursor:pointer;
+ transition:0.3s;
 }
-.anime-card:hover {
-    transform: scale(1.07);
-    box-shadow: 0 0 15px #ff3b3f;
+.anime-card:hover { transform:scale(1.05); box-shadow:0 0 15px #ff3b3f;}
+.anime-card img{width:100%; height:220px; object-fit:cover;}
+.card-overlay{
+ position:absolute; inset:0; background:rgba(0,0,0,0.7);
+ display:flex; flex-direction:column; justify-content:center; align-items:center;
+ opacity:0; transition:0.3s; text-align:center;
 }
-.anime-card img {
-    width:100%;
-    height:220px;
-    object-fit:cover;
-    border-radius:10px;
-}
-.anime-card span {
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:#ff3b3f;
-    padding:5px 8px;
-    border-radius:50%;
-    font-size:12px;
-}
-.add-button {
-    display:block;
-    margin:20px auto;
-    padding:12px 25px;
-    background:#28a745;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:18px;
-    transition:0.3s;
-}
-.add-button:hover { background:#1fa838; }
+.anime-card:hover .card-overlay{opacity:1;}
 
-/* Responsive */
-@media(max-width:600px){
-    .slide img{ height:250px; }
-    .anime-card{ width:45%; }
+.badge{padding:3px 6px; border-radius:6px; font-size:12px; margin:2px; display:inline-block;}
+
+.add-button{
+ display:block; margin:20px auto; padding:10px 20px;
+ background:#28a745; color:#fff; border:none; border-radius:8px;
+ cursor:pointer;
 }
+
+#searchInput{
+ padding:10px; width:80%; max-width:400px; display:block;
+ margin:10px auto; border-radius:8px; border:none;
+}
+
+.category-filter{
+ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:10px;
+}
+.category-filter span{
+ background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer;
+}
+
+h2{ text-align:center; margin-top:30px;}
 </style>
 </head>
 <body>
 
-<header>تطبيق الأنمي الاحترافي</header>
+<header>الأنمي زين</header>
 
 <div class="slider">
     <div class="slides" id="slides"></div>
@@ -158,96 +71,188 @@ header {
 
 <button class="add-button" onclick="askPassword()">إضافة حلقة جديدة</button>
 
+<input type="text" id="searchInput" placeholder="ابحث عن أنمي...">
+
+<div class="category-filter" id="categoryFilter"></div>
+<div class="category-filter" id="typeFilter"></div>
+
 <div class="anime-list" id="animeList"></div>
 
+<h2>🔥 الأكثر مشاهدة</h2>
+<div class="anime-list" id="mostViewedList"></div>
+
+<h2>💥 أنمي أكشن</h2>
+<div class="anime-list" id="actionList"></div>
+
+<h2>📺 مسلسلات</h2>
+<div class="anime-list" id="seriesList"></div>
+
+<h2>🎬 أفلام</h2>
+<div class="anime-list" id="moviesList"></div>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+const firebaseConfig = {
+ apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
+ authDomain: "appp-1234.firebaseapp.com",
+ databaseURL: "https://appp-1234-default-rtdb.firebaseio.com",
+ projectId: "appp-1234",
+ storageBucket: "appp-1234.firebasestorage.app",
+ messagingSenderId: "666495369108",
+ appId: "1:666495369108:web:aabf062e066cea6c3b9981"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const animesRef = database.ref('animes');
+</script>
 
-    // البيانات كما هي بدون تغيير
-    let animes = JSON.parse(localStorage.getItem("animes")) || [
-        { title:"Naruto", image:"https://i.imgur.com/1O0F8E1.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/3f4c1fe9-f74b-48be-81dd-df2572a3a222", season:"الموسم 1"}] },
-        { title:"One Piece", image:"https://i.imgur.com/3zO2Z3H.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/lKfED0t0P0k", season:"الموسم 1"}] },
-        { title:"Demon Slayer", image:"https://i.imgur.com/2C1F3aK.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/xk7F6t0rQ0k", season:"الموسم 1"}] },
-        { title:"Attack on Titan", image:"https://i.imgur.com/BwR5J1p.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/a1b2c3d4", season:"الموسم 1"}] },
-        { title:"My Hero Academia", image:"https://i.imgur.com/f3E9t5N.jpg", season:"الموسم 1", episodes:[{title:"الحلقة 1", video:"https://www.youtube.com/embed/y6Jf3d4", season:"الموسم 1"}] }
-    ];
+<script>
+document.addEventListener("DOMContentLoaded", function(){
 
-    const slidesContainer = document.getElementById("slides");
+const slidesContainer = document.getElementById("slides");
+const animeList = document.getElementById("animeList");
+const searchInput = document.getElementById("searchInput");
 
-    // -------- Slider محترف + Tooltip --------
-    function renderSlider(){
-        slidesContainer.innerHTML = '';
-        const featuredAnimes = animes.slice(0,10);
-        featuredAnimes.forEach(fa => {
-            let lastSeason = fa.episodes.length > 0 ? fa.episodes[fa.episodes.length-1].season : fa.season;
-            let lastEpisode = fa.episodes.length > 0 ? fa.episodes[fa.episodes.length-1].title : "-";
+let animes = [];
+let currentIndex = 0;
 
-            const div = document.createElement("div");
-            div.classList.add("slide");
-            div.innerHTML = `
-                <img src="${fa.image}" alt="${fa.title}">
-                <div class="tooltip-slider">${fa.title} - ${lastSeason} - ${lastEpisode}</div>
-            `;
-            div.addEventListener("click", ()=> {
-                window.location.href = `anime.html?title=${encodeURIComponent(fa.title)}`;
-            });
-            slidesContainer.appendChild(div);
-        });
-    }
-    renderSlider();
+const categories = ["أكشن","مغامرة","رياضي","غموض","كوميدي","دراما","رومانسي","خيال علمي","فانتازيا"];
+const categoryColors = {
+ "أكشن":"#ff3b3f","مغامرة":"#ff7f50","رياضي":"#1e90ff","غموض":"#8a2be2",
+ "كوميدي":"#ffd700","دراما":"#ff69b4","رومانسي":"#ff1493",
+ "خيال علمي":"#00ced1","فانتازيا":"#32cd32"
+};
 
-    // -------- حركة Slider --------
-    let currentIndex = 0;
-    function showSlide(index=currentIndex){ slidesContainer.style.transform = `translateX(-${index*100}%)`; }
-    function nextSlide(){ currentIndex=(currentIndex+1)%Math.min(animes.length,10); showSlide(); }
-    function prevSlide(){ currentIndex=(currentIndex-1+Math.min(animes.length,10))%Math.min(animes.length,10); showSlide(); }
-    setInterval(nextSlide, 5000);
+const types = ["مسلسل","فيلم"];
+let activeFilters=[];
+let activeTypeFilters=[];
 
-    // -------- كلمة المرور --------
-    const PASSWORD = "112233";
-    window.askPassword = function(){
-        const pass = prompt("الرجاء إدخال كلمة المرور:");
-        if(pass === PASSWORD){
-            window.location.href = 'add_episode.html';
-        } else {
-            alert("كلمة المرور خاطئة! لا يمكنك الدخول.");
-        }
-    }
+// تصنيفات
+categories.forEach(c=>{
+ let sp=document.createElement("span");
+ sp.textContent=c;
+ sp.onclick=()=>{
+   sp.classList.toggle("active");
+   sp.style.background = sp.classList.contains("active") ? categoryColors[c]:"#2a2a2a";
+   activeFilters=[...document.querySelectorAll("#categoryFilter .active")].map(e=>e.textContent);
+   renderAnimeList();
+ };
+ categoryFilter.appendChild(sp);
+});
 
-    // -------- قائمة الأنميات مع Tooltip --------
-    const animeList = document.getElementById("animeList");
-    function renderAnimeList(){
-        animeList.innerHTML = '';
-        animes.forEach(anime=>{
-            let lastSeason = anime.episodes.length > 0 && anime.episodes[anime.episodes.length - 1].season
-                             ? anime.episodes[anime.episodes.length - 1].season
-                             : anime.season;
-            let lastEpisode = anime.episodes.length > 0 ? anime.episodes[anime.episodes.length - 1].title : "-";
+// أنواع
+types.forEach(t=>{
+ let sp=document.createElement("span");
+ sp.textContent=t;
+ sp.onclick=()=>{
+   sp.classList.toggle("active");
+   sp.style.background = sp.classList.contains("active") ? "#28a745":"#2a2a2a";
+   activeTypeFilters=[...document.querySelectorAll("#typeFilter .active")].map(e=>e.textContent);
+   renderAnimeList();
+ };
+ typeFilter.appendChild(sp);
+});
 
-            const card = document.createElement("div");
-            card.classList.add("anime-card");
-            card.innerHTML = `
-                <img src="${anime.image}" alt="${anime.title}">
-                <div class="tooltip-slider">${anime.title} - ${lastSeason} - ${lastEpisode}</div>
-                <h3>${anime.title} - ${lastSeason}</h3>
-                <span>${anime.episodes.length}</span>
-            `;
-            card.addEventListener("click",()=> {
-                window.location.href = `anime.html?title=${encodeURIComponent(anime.title)}`;
-            });
-            animeList.appendChild(card);
-        });
-    }
-    renderAnimeList();
+animesRef.on('value', snap=>{
+ const data = snap.val();
+ if(data){
+   animes = Array.isArray(data)?data:Object.values(data);
+   renderSlider();
+   renderAnimeList();
+   renderMostViewed();
+   renderAction();
+   renderSeries();
+   renderMovies();
+ }
+});
 
-    // -------- تحديث بعد إضافة حلقة جديدة --------
-    window.addEventListener('storage', function(e){
-        if(e.key === 'animes'){
-            animes = JSON.parse(localStorage.getItem("animes"));
-            renderSlider();
-            renderAnimeList();
-        }
-    });
+function buildCard(anime){
+ let lastSeason = anime.episodes?.length ? anime.episodes.at(-1).season : anime.season;
+ const card=document.createElement("div");
+ card.className="anime-card";
+ card.innerHTML=`
+   <div style="position:relative">
+     <img src="${anime.image}">
+     <div class="card-overlay">
+       <h3>${anime.title} - ${lastSeason}</h3>
+     </div>
+   </div>`;
+ card.onclick=()=>location.href=`anime.html?title=${encodeURIComponent(anime.title)}`;
+ return card;
+}
+
+// السلايدر
+function renderSlider(){
+ slidesContainer.innerHTML="";
+ animes.slice(0,10).forEach(a=>{
+   let div=document.createElement("div");
+   div.className="slide";
+   div.innerHTML=`<img src="${a.image}">`;
+   slidesContainer.appendChild(div);
+ });
+ showSlide();
+}
+
+function showSlide(){
+ slidesContainer.style.transform=`translateX(-${currentIndex*100}%)`;
+}
+window.nextSlide=()=>{currentIndex=(currentIndex+1)%10;showSlide();}
+window.prevSlide=()=>{currentIndex=(currentIndex-1+10)%10;showSlide();}
+setInterval(nextSlide,5000);
+
+// اللائحة الرئيسية
+function renderAnimeList(){
+ animeList.innerHTML="";
+ const text=searchInput.value.toLowerCase();
+ animes.forEach(a=>{
+   if(!a.title.toLowerCase().includes(text)) return;
+   if(activeFilters.length && !a.category?.some(c=>activeFilters.includes(c))) return;
+   if(activeTypeFilters.length && !activeTypeFilters.includes(a.type)) return;
+   animeList.appendChild(buildCard(a));
+ });
+}
+
+// الأقسام الجديدة
+function renderMostViewed(){
+ const c=document.getElementById("mostViewedList");
+ c.innerHTML="";
+ [...animes].sort((a,b)=>(b.episodes?.length||0)-(a.episodes?.length||0))
+ .slice(0,10).forEach(a=>c.appendChild(buildCard(a)));
+}
+
+function renderAction(){
+ const c=document.getElementById("actionList");
+ c.innerHTML="";
+ animes.filter(a=>a.category?.includes("أكشن"))
+ .slice(0,10).forEach(a=>c.appendChild(buildCard(a)));
+}
+
+function renderSeries(){
+ const c=document.getElementById("seriesList");
+ c.innerHTML="";
+ animes.filter(a=>a.type==="مسلسل")
+ .slice(0,10).forEach(a=>c.appendChild(buildCard(a)));
+}
+
+function renderMovies(){
+ const c=document.getElementById("moviesList");
+ c.innerHTML="";
+ animes.filter(a=>a.type==="فيلم")
+ .slice(0,10).forEach(a=>c.appendChild(buildCard(a)));
+}
+
+searchInput.oninput=renderAnimeList;
+
+// حماية الإضافة
+window.askPassword=()=>{
+ const p=prompt("كلمة المرور:");
+ if(p==="a") location.href="add_episode.html";
+ else alert("كلمة المرور خاطئة");
+};
 
 });
 </script>
