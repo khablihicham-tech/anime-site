@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشاهدة المزيد</title>
+
+<style>
+body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
+header { background:#ff3b3f; padding:15px; text-align:center; font-size:24px; font-weight:bold;}
+
+.anime-list {
+ display:flex;
+ flex-wrap:wrap;
+ gap:15px;
+ padding:15px;
+ justify-content:center;
+}
+
+.anime-card {
+ background:#1e1e1e;
+ width:180px;
+ border-radius:12px;
+ overflow:hidden;
+ cursor:pointer;
+ transition:0.3s;
+}
+.anime-card:hover {transform:scale(1.05); box-shadow:0 0 15px #ff3b3f;}
+.anime-card img{width:100%; height:220px; object-fit:cover;}
+.card-overlay{
+ position:absolute; inset:0; background:rgba(0,0,0,0.7);
+ display:flex; justify-content:center; align-items:center;
+ opacity:0; transition:0.3s; text-align:center;
+}
+.anime-card:hover .card-overlay{opacity:1;}
+</style>
+</head>
+<body>
+
+<header id="pageTitle">مشاهدة المزيد</header>
+
+<div class="anime-list" id="moreList"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+ apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
+ authDomain: "appp-1234.firebaseapp.com",
+ databaseURL: "https://appp-1234-default-rtdb.firebaseio.com",
+ projectId: "appp-1234",
+ storageBucket: "appp-1234.firebasestorage.app",
+ messagingSenderId: "666495369108",
+ appId: "1:666495369108:web:aabf062e066cea6c3b9981"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const animesRef = database.ref('animes');
+
+const list = document.getElementById("moreList");
+const title = document.getElementById("pageTitle");
+
+const urlParams = new URLSearchParams(window.location.search);
+const section = urlParams.get("section");
+
+function buildCard(anime){
+ const card=document.createElement("div");
+ card.className="anime-card";
+ card.innerHTML=`
+   <div style="position:relative">
+     <img src="${anime.image}">
+     <div class="card-overlay">
+       <h3>${anime.title}</h3>
+     </div>
+   </div>`;
+ card.onclick=()=>location.href=`anime.html?title=${encodeURIComponent(anime.title)}`;
+ return card;
+}
+
+animesRef.on('value', snap=>{
+ const data = snap.val();
+ if(!data) return;
+ let animes = Array.isArray(data)?data:Object.values(data);
+ let result=[];
+
+ if(section==="most"){
+   title.textContent="🔥 الأكثر مشاهدة";
+   result = [...animes].sort((a,b)=>(b.episodes?.length||0)-(a.episodes?.length||0));
+ }
+ else if(section==="action"){
+   title.textContent="💥 أنمي أكشن";
+   result = animes.filter(a=>a.category?.includes("أكشن"));
+ }
+ else if(section==="series"){
+   title.textContent="📺 مسلسلات";
+   result = animes.filter(a=>a.type==="مسلسل");
+ }
+ else if(section==="movies"){
+   title.textContent="🎬 أفلام";
+   result = animes.filter(a=>a.type==="فيلم");
+ }
+ else if(section==="summary"){
+   title.textContent="📝 ملخّصات";
+   result = animes.filter(a=>a.type==="ملخّص");
+ }
+
+ result.forEach(a=>list.appendChild(buildCard(a)));
+});
+</script>
+
+</body>
+</html>
