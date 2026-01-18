@@ -52,6 +52,7 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
   <label>نوع الأنمي:</label><br>
   <input type="radio" name="animeType" value="مسلسل" checked> مسلسل
   <input type="radio" name="animeType" value="فيلم"> فيلم
+  <input type="radio" name="animeType" value="ملخّص"> ملخّص
   <div id="typeError" class="error"></div>
   <br>
 
@@ -74,18 +75,6 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 </form>
 
 <input type="text" id="searchAnime" placeholder="بحث بالاسم..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:none; font-size:15px;">
-<label>فلتر حسب التصنيف:</label>
-<div id="filterCategoryBox" class="category-box">
-  <span>أكشن</span>
-  <span>مغامرة</span>
-  <span>رياضي</span>
-  <span>غموض</span>
-  <span>كوميدي</span>
-  <span>دراما</span>
-  <span>رومانسي</span>
-  <span>خيال علمي</span>
-  <span>فانتازيا</span>
-</div>
 
 <div id="animeList"></div>
 </div>
@@ -116,14 +105,14 @@ function saveData(){ animesRef.set(animes); }
 function goHome(){ window.location.href="index.html"; }
 
 document.querySelectorAll("#categoryBox span").forEach(span=> span.addEventListener("click",()=> span.classList.toggle("active")));
-document.querySelectorAll("#filterCategoryBox span").forEach(span=> span.addEventListener("click",()=> {span.classList.toggle("active"); renderAnimeList();}));
-document.getElementById("searchAnime").addEventListener("input",()=> renderAnimeList());
 
 function addEpisodeRow(){
   const container = document.getElementById("episodesContainer");
   const row = document.createElement("div");
   row.className = "episodeRow";
-  row.style.display = "flex"; row.style.gap = "10px"; row.style.marginBottom = "5px";
+  row.style.display = "flex"; 
+  row.style.gap = "10px"; 
+  row.style.marginBottom = "5px";
   row.innerHTML = `
     <input type="text" placeholder="رقم الحلقة" class="episodeNumber" style="flex:1;">
     <input type="text" placeholder="رابط الحلقة" class="episodeLink" style="flex:3;">
@@ -182,27 +171,13 @@ document.getElementById("episodeForm").addEventListener("submit", (e)=>{
   alert("تمت إضافة جميع الحلقات بنجاح!");
   episodeForm.reset();
   document.querySelectorAll("#categoryBox span").forEach(s=>s.classList.remove("active"));
-  document.getElementById("episodesContainer").innerHTML = `
-    <div class="episodeRow" style="display:flex; gap:10px; margin-bottom:5px;">
-      <input type="text" placeholder="رقم الحلقة" class="episodeNumber" style="flex:1;">
-      <input type="text" placeholder="رابط الحلقة" class="episodeLink" style="flex:3;">
-    </div>
-  `;
 });
 
 function renderAnimeList(){
   const list = document.getElementById("animeList");
   list.innerHTML = "";
-  const filterText = document.getElementById("searchAnime").value.trim().toLowerCase();
-  const activeFilters = Array.from(document.querySelectorAll("#filterCategoryBox span.active")).map(s=>s.textContent);
 
   animes.forEach((anime,index)=>{
-      if(filterText && !anime.title.toLowerCase().includes(filterText)) return;
-      if(activeFilters.length>0){
-          const hasCategory = anime.category.some(c=>activeFilters.includes(c));
-          if(!hasCategory) return;
-      }
-
       let categoriesHTML = anime.category.map(c=>`<span class="badge">${c}</span>`).join(' ');
       let lastEpisode = anime.episodes.length ? anime.episodes[anime.episodes.length-1].title : "-";
 
@@ -215,64 +190,11 @@ function renderAnimeList(){
               <p>آخر حلقة: ${lastEpisode}</p>
               <p>${categoriesHTML}</p>
               <p>عدد الحلقات: ${anime.episodes.length}</p>
-              <button class="btn-edit" onclick="editAnime(${index})">تعديل</button>
-              <button class="btn-delete" onclick="deleteAnime(${index})">حذف</button>
           </div>
       `;
       list.appendChild(div);
   });
 }
-
-// دوال التعديل والحذف
-function editAnime(index){
-    const anime = animes[index];
-    const newTitle = prompt("اسم جديد للأنمي:", anime.title); if(!newTitle) return;
-    const newSeason = prompt("الموسم الجديد:", anime.season); if(!newSeason) return;
-    const newImage = prompt("رابط صورة جديد (أو اترك كما هو):", anime.image); if(newImage) anime.image=newImage;
-    const newCategories = prompt("أدخل التصنيفات مفصولة بفاصلة:", anime.category.join(",")); if(newCategories) anime.category=newCategories.split(",").map(s=>s.trim());
-    const newType = prompt("نوع الأنمي (مسلسل/فيلم):", anime.type); if(newType) anime.type=newType;
-    anime.title = newTitle;
-    anime.season = newSeason;
-
-    if(anime.episodes.length > 0){
-        if(confirm("هل تريد تعديل حلقة موجودة؟")){
-            let epList="اختر رقم الحلقة:\n";
-            anime.episodes.forEach((ep,i)=>{ epList+=`${i+1} - ${ep.title}\n`; });
-            const epNum = prompt(epList);
-            if(epNum && epNum >= 1 && epNum <= anime.episodes.length){
-                const ep = anime.episodes[epNum-1];
-                const newLink = prompt("رابط الحلقة الجديد:", ep.video);
-                if(newLink) ep.video = newLink;
-            }
-        }
-    }
-    saveData(); renderAnimeList();
-}
-
-function deleteAnime(index){
-    const anime = animes[index];
-    const choice = confirm("OK = حذف الموسم كامل\nCancel = حذف حلقة واحدة فقط");
-    if(choice){
-        if(confirm("متأكد باغي تحذف الموسم كامل؟")){
-            animes.splice(index,1);
-            saveData();
-            renderAnimeList();
-        }
-    } else {
-        if(anime.episodes.length === 0){ alert("ما كايناش حلقات"); return; }
-        let epList = "اختار رقم الحلقة للحذف:\n";
-        anime.episodes.forEach((ep,i)=>{ epList += `${i+1} - ${ep.title}\n`; });
-        const epNum = prompt(epList);
-        if(epNum && epNum >= 1 && epNum <= anime.episodes.length){
-            if(confirm("متأكد باغي تحذف هاد الحلقة؟")){
-                anime.episodes.splice(epNum-1,1);
-                saveData();
-                renderAnimeList();
-            }
-        }
-    }
-}
-
 </script>
 </body>
 </html>
