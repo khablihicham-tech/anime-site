@@ -46,13 +46,11 @@ img.anime-img {
     width:95%; max-width:600px; border-radius:10px;
     margin-top:20px; box-shadow:0 0 20px #ff3b3f;
 }
-.anime-categories {
+.anime-categories, .anime-type {
     margin:10px 0; font-size:15px; color:#ffcc00;
 }
 .view-counter {
-    margin-top:5px;
-    color:#ffcc00;
-    font-size:14px;
+    margin-top:5px; color:#ffcc00; font-size:14px;
 }
 </style>
 </head>
@@ -72,7 +70,7 @@ img.anime-img {
     </div>
 </div>
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
@@ -103,6 +101,7 @@ const animesRef = database.ref('animes');
 let foundKey = null;
 let foundAnime = null;
 
+// جلب بيانات الأنمي حسب العنوان
 animesRef.once('value', snapshot=>{
     const data = snapshot.val();
     if(!data) return;
@@ -124,20 +123,23 @@ animesRef.once('value', snapshot=>{
     }
 });
 
-// زيادة المشاهدات
+// زيادة عدد المشاهدات
 function addView(animeKey){
     const ref = database.ref("animes/"+animeKey+"/views");
     ref.transaction(current => (current || 0) + 1);
 }
 
+// عرض الأنمي
 function showAnime(anime){
     const container = document.getElementById("animeContainer");
     const categories = Array.isArray(anime.category) ? anime.category.join("، ") : (anime.category || "");
+    const type = anime.type || "غير محدد";
 
     container.innerHTML = `
         <img src="${anime.image}" class="anime-img">
         <h2>${anime.title}</h2>
         <div class="anime-categories">التصنيفات: ${categories}</div>
+        <div class="anime-type">نوع الأنمي: ${type}</div>
         <div class="view-counter">👁 ${(anime.views || 0) + 1} مشاهدة</div>
         <h3>${anime.season || ""}</h3>
         <div id="episodeList"></div>
@@ -157,6 +159,7 @@ function showAnime(anime){
     }
 }
 
+// تشغيل الفيديو
 function openModal(videoUrl){
     let canEmbed = false;
 
