@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إدارة الأنمي</title>
-
 <style>
 body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; }
 header { background:#ff3b3f; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
@@ -15,22 +14,20 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 .btn-add { background:#28a745; color:white; }
 .btn-delete { background:#dc3545; color:white; }
 .btn-edit { background:#ffc107; color:black; }
-.btn-home { background:#007bff; color:white; margin-bottom:10px; }
 .anime-card { background:#1e1e1e; margin:10px 0; padding:10px; border-radius:8px; display:flex; }
 .anime-card img { width:120px; height:160px; object-fit:cover; border-radius:8px; margin-right:15px; }
 .category-box { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
 .category-box span { background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer; }
 .category-box span.active { background:#ff3b3f; }
+.episodeRow input { margin-bottom:0; }
 </style>
 </head>
-
 <body>
 
 <header>إدارة الأنمي</header>
 <div class="container">
 
 <form id="episodeForm">
-
 <input type="text" id="animeName" placeholder="اسم الأنمي">
 
 <label>تصنيفات الأنمي</label>
@@ -50,13 +47,36 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 
 <label>الحلقات</label>
 <div id="episodesContainer"></div>
-
 <button type="button" onclick="addEpisodeRow()" class="btn-add">+ حلقة جديدة</button>
 
 <input type="text" id="animeImage" placeholder="رابط صورة الأنمي">
-
 <button type="submit" class="btn-add">حفظ</button>
 </form>
+
+<!-- بحث + فلترة -->
+<div style="display:flex;gap:10px;margin:15px 0;">
+  <input type="text" id="searchInput" placeholder="🔍 بحث عن أنمي..." style="flex:2; padding:10px; border-radius:5px; border:none;">
+  
+  <select id="filterType" style="flex:1; padding:10px; border-radius:5px; border:none;">
+    <option value="">الكل حسب النوع</option>
+    <option value="مسلسل">مسلسل</option>
+    <option value="فيلم">فيلم</option>
+    <option value="ملخّص">ملخّص</option>
+  </select>
+
+  <select id="filterCategory" style="flex:1; padding:10px; border-radius:5px; border:none;">
+    <option value="">الكل حسب التصنيف</option>
+    <option value="أكشن">أكشن</option>
+    <option value="مغامرة">مغامرة</option>
+    <option value="رياضي">رياضي</option>
+    <option value="غموض">غموض</option>
+    <option value="كوميدي">كوميدي</option>
+    <option value="دراما">دراما</option>
+    <option value="رومانسي">رومانسي</option>
+    <option value="خيال علمي">خيال علمي</option>
+    <option value="فانتازيا">فانتازيا</option>
+  </select>
+</div>
 
 <div id="animeList"></div>
 </div>
@@ -66,7 +86,7 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// Firebase Config
+// ===== Firebase Config =====
 const firebaseConfig = {
  apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
  authDomain: "appp-1234.firebaseapp.com",
@@ -76,12 +96,12 @@ const firebaseConfig = {
  messagingSenderId: "666495369108",
  appId: "1:666495369108:web:aabf062e066cea6c3b9981"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const animesRef = db.ref("animes");
+
 let animes = [];
-let editIndex = null; // مؤشر التعديل
+let editIndex = null;
 
 // تحميل البيانات
 animesRef.on("value", snapshot=>{
@@ -90,16 +110,14 @@ animesRef.on("value", snapshot=>{
  renderAnimeList();
 });
 
-function saveData(){
- animesRef.set(animes);
-}
+function saveData(){ animesRef.set(animes); }
 
-// اختيار التصنيفات
+// ===== اختيار التصنيفات =====
 document.querySelectorAll("#categoryBox span").forEach(span=>{
  span.addEventListener("click",()=> span.classList.toggle("active"));
 });
 
-// ➕ إضافة سطر حلقة
+// ===== إضافة سطر حلقة =====
 function addEpisodeRow(num="", link=""){
  const container = document.getElementById("episodesContainer");
  const row = document.createElement("div");
@@ -110,8 +128,7 @@ function addEpisodeRow(num="", link=""){
  row.innerHTML=`
    <input type="text" class="episodeNumber" placeholder="رقم الحلقة" style="flex:1;" value="${num}">
    <input type="text" class="episodeLink" placeholder="رابط الحلقة" style="flex:3;" value="${link}">
-   <button type="button" onclick="this.parentElement.remove()" 
-     style="background:#dc3545;color:white;border:none;border-radius:5px;">✖</button>
+   <button type="button" onclick="this.parentElement.remove()" style="background:#dc3545;color:white;border:none;border-radius:5px;">✖</button>
  `;
  container.appendChild(row);
 }
@@ -132,10 +149,9 @@ function collectEpisodes(){
  return episodes;
 }
 
-// Submit Form
+// ===== حفظ أو تعديل الأنمي =====
 episodeForm.addEventListener("submit", e=>{
  e.preventDefault();
-
  const title = animeName.value.trim();
  const seasonVal = season.value.trim();
  const imgVal = animeImage.value.trim();
@@ -148,28 +164,11 @@ episodeForm.addEventListener("submit", e=>{
    return;
  }
 
- // إذا تعديل
  if(editIndex !== null){
-   animes[editIndex] = {
-     title:title,
-     season:seasonVal,
-     image:imgVal,
-     category:selectedCategories,
-     type:selectedType,
-     episodes:episodes
-   };
+   animes[editIndex] = {title, season:seasonVal, image:imgVal, category:selectedCategories, type:selectedType, episodes};
    editIndex = null;
- } 
- // إذا إضافة جديدة
- else {
-   animes.unshift({
-     title:title,
-     season:seasonVal,
-     image:imgVal,
-     category:selectedCategories,
-     type:selectedType,
-     episodes:episodes
-   });
+ } else {
+   animes.unshift({title, season:seasonVal, image:imgVal, category:selectedCategories, type:selectedType, episodes});
  }
 
  saveData();
@@ -180,12 +179,26 @@ episodeForm.addEventListener("submit", e=>{
  document.querySelectorAll("#categoryBox span").forEach(s=>s.classList.remove("active"));
 });
 
-// عرض الأنميات
+// ===== عرض الأنميات مع البحث + فلترة =====
 function renderAnimeList(){
  const list=document.getElementById("animeList");
  list.innerHTML="";
+ let filtered=[...animes];
 
- animes.forEach((anime,index)=>{
+ // 🔍 البحث بالاسم
+ const searchValue=document.getElementById("searchInput").value.toLowerCase();
+ if(searchValue) filtered = filtered.filter(a => a.title.toLowerCase().includes(searchValue));
+
+ // فلترة النوع
+ const filterType = document.getElementById("filterType").value;
+ if(filterType) filtered = filtered.filter(a => a.type === filterType);
+
+ // فلترة التصنيف
+ const filterCategory = document.getElementById("filterCategory").value;
+ if(filterCategory) filtered = filtered.filter(a => a.category.includes(filterCategory));
+
+ filtered.forEach(anime=>{
+   const realIndex = animes.indexOf(anime);
    const div=document.createElement("div");
    div.className="anime-card";
    div.innerHTML=`
@@ -193,15 +206,15 @@ function renderAnimeList(){
      <div style="flex:1">
        <h3>${anime.title} - ${anime.season} (${anime.type})</h3>
        <p>عدد الحلقات: ${anime.episodes.length}</p>
-       <button class="btn-edit" onclick="editAnime(${index})">✏️ تعديل</button>
-       <button class="btn-delete" onclick="deleteAnime(${index})">🗑️ حذف</button>
+       <button class="btn-edit" onclick="editAnime(${realIndex})">✏️ تعديل</button>
+       <button class="btn-delete" onclick="deleteAnime(${realIndex})">🗑️ حذف</button>
      </div>
    `;
    list.appendChild(div);
  });
 }
 
-// حذف أنمي
+// ===== حذف أنمي =====
 function deleteAnime(index){
  if(confirm("متأكد تحذف الأنمي؟")){
    animes.splice(index,1);
@@ -210,37 +223,34 @@ function deleteAnime(index){
  }
 }
 
-// ✏️ تعديل أنمي + جميع الحلقات
+// ===== تعديل أنمي + جميع الحلقات =====
 function editAnime(index){
  const anime = animes[index];
  editIndex = index;
-
  animeName.value = anime.title;
  season.value = anime.season;
  animeImage.value = anime.image;
-
- document.querySelectorAll('input[name="animeType"]').forEach(r=>{
-   r.checked = (r.value==anime.type);
- });
-
+ document.querySelectorAll('input[name="animeType"]').forEach(r=>{ r.checked = (r.value==anime.type); });
  document.querySelectorAll("#categoryBox span").forEach(span=>{
    span.classList.remove("active");
-   if(anime.category.includes(span.textContent)){
-     span.classList.add("active");
-   }
+   if(anime.category.includes(span.textContent)) span.classList.add("active");
  });
-
- // تعمير الحلقات
  const container = document.getElementById("episodesContainer");
  container.innerHTML="";
  anime.episodes.forEach(ep=>{
    const num = ep.title.replace("الحلقة ","");
    addEpisodeRow(num, ep.video);
  });
-
  window.scrollTo({top:0,behavior:"smooth"});
 }
-</script>
 
+// ===== أحداث البحث والفلترة =====
+document.getElementById("searchInput").addEventListener("input", renderAnimeList);
+document.getElementById("filterType").addEventListener("change", renderAnimeList);
+document.getElementById("filterCategory").addEventListener("change", renderAnimeList);
+
+// عرض عند تحميل الصفحة
+renderAnimeList();
+</script>
 </body>
 </html>
