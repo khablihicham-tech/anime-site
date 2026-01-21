@@ -12,6 +12,7 @@ crossorigin="anonymous"></script>
 <style>
 body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
 header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.5);}
+
 .slider { position: relative; width: 100%; max-width: 1000px; margin: 20px auto; overflow: hidden; border-radius: 15px;}
 .slides { display:flex; transition: transform 0.8s ease-in-out;}
 .slide { min-width:100%; position:relative; cursor: grab; }
@@ -20,6 +21,8 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 
 .anime-section { margin:20px 0; position: relative; }
 .anime-list { display:flex; flex-wrap:nowrap; overflow-x:auto; padding:10px; gap:10px; }
+#animeList { flex-wrap: wrap; justify-content: center; overflow-x: visible; }
+
 .anime-card { background:#1e1e1e; width:180px; border-radius:12px; overflow:hidden; cursor:pointer; transition:0.3s; flex-shrink:0; position:relative; }
 .anime-card:hover {transform:scale(1.05); box-shadow:0 0 15px #ff3b3f;}
 .anime-card img{width:100%; height:220px; object-fit:cover; transition: transform 0.3s ease; cursor:pointer;}
@@ -41,6 +44,10 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 .category-filter span{ background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer; color:#fff;}
 .category-filter span.active{ font-weight:bold;}
 h2{text-align:center;}
+
+.pagination { text-align:center; margin:10px 0; }
+.pagination button { padding:6px 12px; margin:0 5px; border:none; border-radius:5px; cursor:pointer; background:#ff3b3f; color:#fff;}
+.pagination button:hover { background:#ff5559; }
 </style>
 </head>
 <body>
@@ -70,7 +77,15 @@ h2{text-align:center;}
 <div class="category-filter" id="categoryFilter"></div>
 <div class="category-filter" id="typeFilter"></div>
 
-<div class="anime-section"><h2>🎯 الأنمي الرئيسي</h2><div class="anime-list" id="animeList"></div></div>
+<div class="anime-section">
+  <h2>🎯 الأنمي الرئيسي</h2>
+  <div class="anime-list" id="animeList"></div>
+  <div class="pagination" id="animePagination">
+    <button id="prevPage">الصفحة السابقة</button>
+    <button id="nextPage">الصفحة التالية</button>
+  </div>
+</div>
+
 <div class="anime-section"><h2>🔥 الأكثر مشاهدة</h2><div class="anime-list" id="mostViewedList"></div></div>
 <div class="anime-section"><h2>💥 أنمي أكشن</h2><div class="anime-list" id="actionList"></div></div>
 <div class="anime-section"><h2>📺 مسلسلات</h2><div class="anime-list" id="seriesList"></div></div>
@@ -108,6 +123,10 @@ document.addEventListener("DOMContentLoaded", function(){
   const types = ["مسلسل","فيلم","ملخّص"];
   let activeFilters = [], activeTypeFilters = [];
 
+  // Pagination
+  let currentPage = 1;
+  const itemsPerPage = 7;
+
   // الفلاتر
   categories.forEach(c=>{
     let sp = document.createElement("span");
@@ -116,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function(){
       sp.classList.toggle("active");
       sp.style.background = sp.classList.contains("active")?"#ff3b3f":"#2a2a2a";
       activeFilters = [...document.querySelectorAll("#categoryFilter .active")].map(e=>e.textContent);
+      currentPage = 1;
       renderAnimeList();
     };
     categoryFilter.appendChild(sp);
@@ -127,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function(){
       sp.classList.toggle("active");
       sp.style.background = sp.classList.contains("active")?"#28a745":"#2a2a2a";
       activeTypeFilters = [...document.querySelectorAll("#typeFilter .active")].map(e=>e.textContent);
+      currentPage = 1;
       renderAnimeList();
     };
     typeFilter.appendChild(sp);
@@ -198,73 +219,98 @@ document.addEventListener("DOMContentLoaded", function(){
   window.prevSlide=()=>{if(currentIndex>0) currentIndex--; showSlide();}
   setInterval(()=>{if(currentIndex<6) currentIndex++; else currentIndex=0; showSlide();},5000);
 
-  // البحث
-  function renderAnimeList(){animeList.innerHTML=""; const text=searchInput.value.toLowerCase(); animes.forEach(a=>{if(!a.title.toLowerCase().includes(text)) return; if(activeFilters.length&&!a.category?.some(c=>activeFilters.includes(c))) return; if(activeTypeFilters.length&&!activeTypeFilters.includes(a.type)) return; animeList.appendChild(buildCard(a));});}
-  searchInput.oninput=renderAnimeList;
+  // البحث + Pagination
+  function renderAnimeList(){
+    animeList.innerHTML = "";
+    const text = searchInput.value.toLowerCase();
+    const filtered = animes.filter(a=>{
+      if(!a.title.toLowerCase().includes(text)) return false;
+      if(activeFilters.length && !a.category?.some(c=>activeFilters.includes(c))) return false;
+      if(activeTypeFilters.length && !activeTypeFilters.includes(a.type)) return false;
+      return true;
+    });
+
+    const totalPages = Math.ceil(filtered.length/itemsPerPage);
+    if(currentPage>totalPages) currentPage=totalPages;
+    if(currentPage<1) currentPage=1;
+
+    const start = (currentPage-1)*itemsPerPage;
+    const end = start+itemsPerPage;
+    const pageItems = filtered.slice(start,end);
+
+    pageItems.forEach(a=>animeList.appendChild(buildCard(a)));
+  }
+
+  searchInput.oninput=()=>{currentPage=1; renderAnimeList();};
+
+  document.getElementById("prevPage").onclick=()=>{currentPage--; renderAnimeList();};
+  document.getElementById("nextPage").onclick=()=>{currentPage++; renderAnimeList();};
 
   // === أقسام + زر "مشاهدة المزيد" النهائي ===
   function renderSection(id, arr, sectionName){
     const container=document.getElementById(id);
     container.innerHTML="";
-
-    // البطاقات العادية
     arr.forEach(a=>container.appendChild(buildCard(a)));
-
-    // زر مشاهدة المزيد
     const more = document.createElement("div");
     more.className="more-card";
     more.textContent="مشاهدة المزيد";
-
-    // نمرّر اسم القسم للرابط
     more.onclick = ()=> location.href = `more.html?section=${sectionName}`;
-
     container.appendChild(more);
   }
-
-  // === استدعاءات الأقسام ===
-  animesRef.on('value', snap=>{
-    const data = snap.val();
-    if(!data) return; 
-    animes = Array.isArray(data)?data:Object.values(data);
-
-    renderSlider();
-    renderAnimeList();
-
-    renderSection(
-      "mostViewedList",
-      [...animes].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,7),
-      "mostViewed"
-    );
-
-    renderSection(
-      "actionList",
-      animes.filter(a=>a.category?.includes("أكشن")).slice(0,7),
-      "action"
-    );
-
-    renderSection(
-      "seriesList",
-      animes.filter(a=>a.type==="مسلسل").slice(0,7),
-      "series"
-    );
-
-    renderSection(
-      "moviesList",
-      animes.filter(a=>a.type==="فيلم").slice(0,7),
-      "movies"
-    );
-
-    renderSection(
-      "summaryList",
-      animes.filter(a=>a.type==="ملخّص").slice(0,7),
-      "summary"
-    );
-  });
 
   // زر إضافة حلقة
   window.askPassword=()=>{const p=prompt("كلمة المرور:"); if(p==="a") location.href="add_episode.html"; else alert("كلمة المرور خاطئة");};
 });
 </script>
+<!-- ===== AnimeZine Footer ===== -->
+<style>
+.site-footer {
+  background: #0b0b0b;
+  padding: 30px 10px;
+  text-align: center;
+  margin-top: 40px;
+  border-top: 2px solid #00c3ff;
+}
+
+.site-footer h3 {
+  color: #00c3ff;
+  margin-bottom: 10px;
+}
+
+.site-footer p {
+  color: #cccccc;
+  font-size: 15px;
+  margin: 5px 0;
+}
+
+.site-footer a {
+  color: #00c3ff;
+  text-decoration: none;
+  margin: 0 8px;
+  font-size: 15px;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+</style>
+
+<footer class="site-footer">
+
+  <h3>AnimeZine</h3>
+  <p>موقع عربي لعشاق الأنمي – ملخصات، أخبار ومراجعات</p>
+
+  <div>
+    <a href="index.html">الرئيسية</a> |
+    <a href="about.html">من نحن</a> |
+    <a href="privacy.html">سياسة الخصوصية</a> |
+    <a href="contact.html">اتصل بنا</a>
+  </div>
+
+  <p>© 2026 AnimeZine - جميع الحقوق محفوظة</p>
+
+</footer>
+<!-- ===== End Footer ===== -->
 
 </body>
 </html>
