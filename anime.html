@@ -154,17 +154,34 @@ function showAnime(anime){
     const categories = Array.isArray(anime.category) ? anime.category.join("، ") : (anime.category || "");
     const type = anime.type || "غير محدد";
 
+    // محتوى الأنمي
     container.innerHTML = `
         <img src="${anime.image}" class="anime-img">
         <h2>${anime.title}</h2>
         <div class="anime-categories">التصنيفات: ${categories}</div>
         <div class="anime-type">نوع الأنمي: ${type}</div>
+
+        <!-- إعلان وسط الصفحة -->
+        <div id="ads-middle" style="margin:20px auto; text-align:center;">
+            <script>
+                atOptions = {
+                  'key' : '242d4419d553d682cfb41fa5d2d9f430',
+                  'format' : 'iframe',
+                  'height' : 250,
+                  'width' : 300,
+                  'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/242d4419d553d682cfb41fa5d2d9f430/invoke.js"></script>
+        </div>
+
         <div class="view-counter">👁 ${(anime.views || 0) + 1} مشاهدة</div>
         <h3>${anime.season || ""}</h3>
         <div id="episodeList"></div>
         <p>اختر حلقة لتشغيل الفيديو</p>
     `;
 
+    // عرض الحلقات
     const episodeList = document.getElementById("episodeList");
     episodeList.innerHTML = "";
 
