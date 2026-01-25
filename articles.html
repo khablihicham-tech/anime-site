@@ -29,7 +29,6 @@ header p{ color:#ccc; font-size:18px; }
 
 nav{ text-align:center; margin-bottom:30px; }
 nav a{ color:#00c3ff; margin:0 15px; text-decoration:none; font-weight:bold; }
-nav a:hover{ text-decoration:underline; }
 
 .controls{
   text-align:center;
@@ -45,7 +44,6 @@ nav a:hover{ text-decoration:underline; }
   cursor:pointer;
   font-weight:bold;
 }
-.controls button:hover{ opacity:0.8; }
 .controls input{
   padding:8px;
   border-radius:5px;
@@ -58,11 +56,6 @@ nav a:hover{ text-decoration:underline; }
   display:grid;
   grid-template-columns: repeat(6, 1fr);
   gap:20px;
-  justify-content:center;
-  margin-bottom:50px;
-  max-width: 1800px;
-  margin-left:auto;
-  margin-right:auto;
 }
 
 .card{
@@ -70,16 +63,9 @@ nav a:hover{ text-decoration:underline; }
   border:2px solid #00c3ff;
   border-radius:10px;
   overflow:hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
   display:flex;
   flex-direction:column;
-  width: 100%;  
-  height: 420px; 
-}
-
-.card:hover{
-  transform: translateY(-5px);
-  box-shadow:0 8px 20px rgba(0,195,255,0.5);
+  height:420px;
 }
 
 .card img{
@@ -96,48 +82,13 @@ nav a:hover{ text-decoration:underline; }
   height: calc(420px - 180px);
 }
 
-.card-content h3{
-  color:#00c3ff;
-  margin:10px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-content .categories{
-  font-size:14px;
-  color:#ccc;
-  margin-bottom:5px;
-}
-
-.card-content p{
-  font-size:16px;
-  line-height:1.6;
-  margin-bottom:10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.card-content h3{ color:#00c3ff; }
 
 .card-content a{
-  display:inline-block; 
-  margin-top:10px; 
-  color:#00c3ff; 
-  font-weight:bold; 
+  color:#00c3ff;
+  font-weight:bold;
   text-decoration:none;
-}
-.card-content a:hover{
-  text-decoration:underline;
-}
-
-.ad-space{
-  margin-top:auto;
-  padding:10px;
-  background:#111;
-  text-align:center;
-  color:#888;
-  font-size:14px;
-  border:1px dashed #00c3ff;
-  border-radius:5px;
+  cursor:pointer;
 }
 
 .site-footer{
@@ -146,112 +97,104 @@ nav a:hover{ text-decoration:underline; }
   text-align:center;
   border-top:2px solid #00c3ff;
 }
-.site-footer h3{ color:#00c3ff; margin-bottom:10px; }
-.site-footer p{ color:#ccc; font-size:15px; margin:5px 0; }
-.site-footer a{ color:#00c3ff; text-decoration:none; margin:0 8px; font-size:15px; }
-.site-footer a:hover{ text-decoration:underline; }
-
-@media (max-width:1500px){ .cards{ grid-template-columns: repeat(4, 1fr); } }
-@media (max-width:1200px){ .cards{ grid-template-columns: repeat(3, 1fr); } }
-@media (max-width:800px){ .cards{ grid-template-columns: repeat(2, 1fr); } }
-@media (max-width:500px){
-  .cards{ grid-template-columns: 1fr; }
-  .controls input{ width:100%; margin-top:10px; margin-left:0; }
-}
 </style>
-
 </head>
+
 <body dir="rtl">
 
 <div class="container">
 
-  <header>
-    <h1>AnimeZine</h1>
-    <p>موقع عربي لعشاق الأنمي – ملخصات، أخبار ومراجعات</p>
-  </header>
+<header>
+<h1>AnimeZine</h1>
+<p>موقع عربي لعشاق الأنمي</p>
+</header>
 
-  <nav>
-    <a href="index.html">الرئيسية</a> |
-    <a href="about.html">من نحن</a> |
-    <a href="privacy.html">سياسة الخصوصية</a> |
-    <a href="contact.html">اتصل بنا</a>
-  </nav>
+<nav>
+<a href="index.html">الرئيسية</a> |
+<a href="about.html">من نحن</a> |
+<a href="privacy.html">سياسة الخصوصية</a> |
+<a href="contact.html">اتصل بنا</a>
+</nav>
 
-  <div class="controls" id="controls-container">
-    <button onclick="filterArticles('all')">الكل</button>
-    <input type="text" id="searchInput" placeholder="ابحث عن الأنمي..." onkeyup="searchArticles()">
-  </div>
+<div class="controls" id="controls-container">
+<button onclick="filterArticles('all')">الكل</button>
+<input type="text" id="searchInput" placeholder="ابحث..." onkeyup="searchArticles()">
+</div>
 
-  <div class="cards" id="articles-container"></div>
+<div class="cards" id="articles-container"></div>
 
 </div>
 
 <footer class="site-footer">
-  <h3>AnimeZine</h3>
-  <p>موقع عربي لعشاق الأنمي – ملخصات، أخبار ومراجعات</p>
-  <div>
-    <a href="index.html">الرئيسية</a> |
-    <a href="about.html">من نحن</a> |
-    <a href="privacy.html">سياسة الخصوصية</a> |
-    <a href="contact.html">اتصل بنا</a>
-  </div>
-  <p>© 2026 AnimeZine - جميع الحقوق محفوظة</p>
+<p>© 2026 AnimeZine</p>
 </footer>
 
 <script>
 const container = document.getElementById("articles-container");
 const controls = document.getElementById("controls-container");
-
 let articles = window.articles || [];
 
-createFilterButtons();
+// 🔴 ضع رابط SmartLink Adsterra هنا
+const adLink = "https://www.effectivegatecpm.com/sw624wnv?key=14bf2d9992f14a961565f1b412d5979b";
+
 displayArticles(articles);
+createFilterButtons();
 
 function displayArticles(list){
   container.innerHTML = "";
   list.forEach((article, index) => {
     const card = document.createElement("div");
     card.className = "card";
-    const categoriesText = article.categories.join(" – ");
     card.innerHTML = `
-      <img src="${article.img}" alt="${article.title}">
+      <img src="${article.img}">
       <div class="card-content">
-        <div>
-          <h3 title="${article.title}">${article.title}</h3>
-          <div class="categories">${categoriesText}</div>
-          <p>${article.description}</p>
-          <a href="article.html?id=${index}">اقرأ المزيد</a>
-        </div>
-        <div class="ad-space">إعلان AdSense هنا</div>
+        <h3>${article.title}</h3>
+        <p>${article.description}</p>
+        <a onclick="handleEpisodeClick(${index})">اقرأ المزيد</a>
       </div>
     `;
     container.appendChild(card);
   });
 }
 
-function filterArticles(category){
-  if(category === 'all'){
-    displayArticles(articles);
-  } else {
-    displayArticles(
-      articles.filter(a => a.categories.includes(category))
-    );
+// ✅ نظام الإعلان قبل الدخول
+function handleEpisodeClick(id){
+  let count = localStorage.getItem("click_counter");
+
+  if(!count) count = 1;
+  else count = parseInt(count) + 1;
+
+  localStorage.setItem("click_counter", count);
+
+  // الضغطة الأولى → إعلان
+  if(count === 1){
+    window.open(adLink, "_blank");
+  }
+
+  // الضغطة الثانية → دخول الحلقة
+  else if(count === 2){
+    window.location.href = "article.html?id=" + id;
+    localStorage.setItem("click_counter", 0);
   }
 }
 
+function filterArticles(category){
+  if(category === "all") displayArticles(articles);
+  else displayArticles(articles.filter(a => a.categories.includes(category)));
+}
+
 function searchArticles(){
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const filtered = articles.filter(a => a.title.toLowerCase().includes(query));
-  displayArticles(filtered);
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  displayArticles(articles.filter(a => a.title.toLowerCase().includes(q)));
 }
 
 function createFilterButtons(){
-  const categoriesSet = new Set();
-  articles.forEach(a => a.categories.forEach(cat => categoriesSet.add(cat)));
-  [...categoriesSet].forEach(cat => {
+  const set = new Set();
+  articles.forEach(a => a.categories.forEach(c => set.add(c)));
+  [...set].forEach(cat=>{
     const btn = document.createElement("button");
     btn.textContent = cat;
-    btn.onclick = () => filterArticles(cat);
+    btn.onclick = ()=>filterArticles(cat);
     controls.insertBefore(btn, document.getElementById("searchInput"));
   });
 }
