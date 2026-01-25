@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مشاهدة الأنمي</title>
 
-
 <style>
 body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0; text-align:center; }
 header { background:#ff3b3f; padding:20px; font-size:26px; font-weight:bold; }
@@ -61,18 +60,6 @@ img.anime-img {
 <button onclick="goHome()">⬅ الرجوع للرئيسية</button>
 
 <div id="animeContainer">
-
-    <script>
-  atOptions = {
-    'key' : '242d4419d553d682cfb41fa5d2d9f430',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/242d4419d553d682cfb41fa5d2d9f430/invoke.js"></script>
-    
     <p>جارٍ تحميل الأنمي...</p>
 </div>
 
@@ -83,10 +70,6 @@ img.anime-img {
     </div>
 </div>
 
-
-    
-
-    
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -118,7 +101,6 @@ const animesRef = database.ref('animes');
 let foundKey = null;
 let foundAnime = null;
 
-// جلب بيانات الأنمي حسب العنوان
 animesRef.once('value', snapshot=>{
     const data = snapshot.val();
     if(!data) return;
@@ -140,13 +122,11 @@ animesRef.once('value', snapshot=>{
     }
 });
 
-// زيادة عدد المشاهدات
 function addView(animeKey){
     const ref = database.ref("animes/"+animeKey+"/views");
     ref.transaction(current => (current || 0) + 1);
 }
 
-// عرض الأنمي
 function showAnime(anime){
     const container = document.getElementById("animeContainer");
     const categories = Array.isArray(anime.category) ? anime.category.join("، ") : (anime.category || "");
@@ -176,8 +156,30 @@ function showAnime(anime){
     }
 }
 
-// تشغيل الفيديو
+// ====== Adsterra + تشغيل الحلقة ======
 function openModal(videoUrl){
+
+    const adLink = "https://www.effectivegatecpm.com/g31pp6c9?key=08a82cb4c410cfb14ad1a25abef6221d";
+
+    // عدّ الضغطات داخل نفس الجلسة
+    let clickCount = sessionStorage.getItem("episodeClicks");
+    if(!clickCount) clickCount = 0;
+
+    clickCount = parseInt(clickCount) + 1;
+    sessionStorage.setItem("episodeClicks", clickCount);
+
+    // الضغطة 1 و 2 → إعلان فقط
+    if(clickCount === 1 || clickCount === 2){
+        window.open(adLink, "_blank");
+        return; 
+    }
+
+    // الضغطة 3 → نشغل الحلقة و نرجع العداد للصفر
+    if(clickCount >= 3){
+        sessionStorage.setItem("episodeClicks", 0);
+    }
+
+    // ---- تشغيل الحلقة ----
     let canEmbed = false;
 
     if(videoUrl.includes("youtube.com/watch")){
@@ -199,6 +201,7 @@ function openModal(videoUrl){
         window.open(videoUrl, "_blank");
     }
 }
+
 
 function closeModal(){
     document.getElementById("videoFrame").src = "";
