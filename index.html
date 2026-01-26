@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الأنمي زين</title>
 
-<!-- ===== AdSense Main Script ===== -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9094508203387590"
-crossorigin="anonymous"></script>
+<meta name="description" content="AnimeZine – موقع عربي لعشاق الأنمي، ملخصات، مراجعات وأخبار الأنمي">
+<meta name="keywords" content="أنمي, Anime, ملخصات الأنمي, أخبار الأنمي">
+
+<!-- ===== AdSense ===== -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9094508203387590" crossorigin="anonymous"></script>
 
 <style>
 body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
@@ -16,57 +18,67 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 .slider { position: relative; width: 100%; max-width: 1000px; margin: 20px auto; overflow: hidden; border-radius: 15px;}
 .slides { display:flex; transition: transform 0.8s ease-in-out;}
 .slide { min-width:100%; position:relative; cursor: grab; }
-.prev, .next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; padding:10px; cursor:pointer; z-index:10;}
+
+.prev, .next {
+ position:absolute; top:50%; transform:translateY(-50%);
+ background:rgba(0,0,0,0.6); color:#fff; border:none;
+ border-radius:50%; padding:10px; cursor:pointer; z-index:10;
+}
 .prev{left:10px;} .next{right:10px;}
 
-.anime-section { margin:20px 0; position: relative; }
+.anime-section { margin:20px 0; }
 .anime-list { display:flex; flex-wrap:nowrap; overflow-x:auto; padding:10px; gap:10px; }
 #animeList { flex-wrap: wrap; justify-content: center; overflow-x: visible; }
 
-.anime-card { background:#1e1e1e; width:180px; border-radius:12px; overflow:hidden; cursor:pointer; transition:0.3s; flex-shrink:0; position:relative; }
+.anime-card {
+ background:#1e1e1e; width:180px; border-radius:12px;
+ overflow:hidden; cursor:pointer; transition:0.3s; flex-shrink:0; position:relative;
+}
 .anime-card:hover {transform:scale(1.05); box-shadow:0 0 15px #ff3b3f;}
-.anime-card img{width:100%; height:220px; object-fit:cover; transition: transform 0.3s ease; cursor:pointer;}
-.anime-card img:active {transform: scale(0.95);}
-.card-overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; opacity:0; transition:0.3s; text-align:center; color:#fff;}
+.anime-card img{width:100%; height:220px; object-fit:cover}
+
+.card-overlay{
+ position:absolute; inset:0; background:rgba(0,0,0,0.7);
+ display:flex; justify-content:center; align-items:center;
+ opacity:0; transition:0.3s; text-align:center;
+}
 .anime-card:hover .card-overlay{opacity:1;}
 
-.anime-type-badge { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; color: #fff; }
-.anime-type-badge.مسلسل { background: #28a745; }
-.anime-type-badge.فيلم { background: #ff3b3f; }
-.anime-type-badge.ملخّص { background: #ff9800; }
+.anime-type-badge {
+ position:absolute; top:8px; left:8px; padding:4px 8px;
+ border-radius:5px; font-size:12px; font-weight:bold; color:#fff;
+}
+.anime-type-badge.مسلسل{background:#28a745;}
+.anime-type-badge.فيلم{background:#ff3b3f;}
+.anime-type-badge.ملخّص{background:#ff9800;}
 
-.more-card{ background:#ff3b3f; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:bold; color:white; height:220px; border-radius:12px; cursor:pointer; flex-shrink:0;}
+.more-card{
+ background:#ff3b3f; display:flex; align-items:center; justify-content:center;
+ font-size:18px; font-weight:bold; color:white; height:220px;
+ border-radius:12px; cursor:pointer; flex-shrink:0;
+}
 .more-card:hover{background:#ff5559; transform:scale(1.05);}
-.add-button{ display:none; margin:20px auto; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:8px; cursor:pointer;}
 
-#searchInput{ padding:10px; width:80%; max-width:400px; display:block; margin:10px auto; border-radius:8px; border:none;}
-.category-filter{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:10px; }
-.category-filter span{ background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer; color:#fff;}
-.category-filter span.active{ font-weight:bold;}
-h2{text-align:center;}
+#searchInput{
+ padding:10px; width:80%; max-width:400px;
+ display:block; margin:10px auto; border-radius:8px; border:none;
+}
 
-.pagination { text-align:center; margin:10px 0; }
-.pagination button { padding:6px 12px; margin:0 5px; border:none; border-radius:5px; cursor:pointer; background:#ff3b3f; color:#fff;}
-.pagination button:hover { background:#ff5559; }
+.category-filter{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:10px;}
+.category-filter span{ background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer;}
+.category-filter span.active{font-weight:bold;}
+
+.pagination{text-align:center;margin:10px;}
+.pagination button{
+ padding:6px 12px;border:none;border-radius:5px;
+ background:#ff3b3f;color:#fff;cursor:pointer;
+}
 </style>
-
-
-  <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "658707ef94ed46679463c886aea54e02"}'></script><!-- End Cloudflare Web Analytics -->
-
 </head>
+
 <body>
 
 <header>الأنمي زين</header>
-
-<div style="text-align:center; margin:15px 0;">
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
-       data-ad-layout="in-article"
-       data-ad-format="fluid"
-       data-ad-client="ca-pub-9094508203387590"
-       data-ad-slot="4839539260"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
 
 <div class="slider">
   <div class="slides" id="slides"></div>
@@ -74,17 +86,15 @@ h2{text-align:center;}
   <button class="next" onclick="nextSlide()">&#10095;</button>
 </div>
 
-<button class="add-button" id="addButton" onclick="askPassword()">إضافة حلقة جديدة</button>
-
 <input type="text" id="searchInput" placeholder="ابحث عن أنمي...">
 
 <div class="category-filter" id="categoryFilter"></div>
 <div class="category-filter" id="typeFilter"></div>
 
 <div class="anime-section">
-  <h2>🎯 الأنمي الرئيسي</h2>
+  <h2 style="text-align:center">🎯 الأنمي الرئيسي</h2>
   <div class="anime-list" id="animeList"></div>
-  <div class="pagination" id="animePagination">
+  <div class="pagination">
     <button id="prevPage">الصفحة السابقة</button>
     <button id="nextPage">الصفحة التالية</button>
   </div>
@@ -112,210 +122,173 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const animesRef = firebase.database().ref('animes');
-</script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-  const slidesContainer = document.getElementById("slides");
-  const animeList = document.getElementById("animeList");
-  const searchInput = document.getElementById("searchInput");
-  const categoryFilter = document.getElementById("categoryFilter");
-  const typeFilter = document.getElementById("typeFilter");
+document.addEventListener("DOMContentLoaded", ()=>{
 
-  let animes = [], currentIndex = 0;
-  const categories = ["أكشن","مغامرة","رياضي","غموض","كوميدي","دراما","رومانسي","خيال علمي","فانتازيا"];
-  const types = ["مسلسل","فيلم","ملخّص"];
-  let activeFilters = [], activeTypeFilters = [];
+const slidesContainer = document.getElementById("slides");
+const animeList = document.getElementById("animeList");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const typeFilter = document.getElementById("typeFilter");
 
-  // Pagination
-  let currentPage = 1;
-  const itemsPerPage = 7;
+let animes = [], currentIndex=0;
+let currentPage=1;
+const itemsPerPage=8;
 
-  // الفلاتر
-  categories.forEach(c=>{
-    let sp = document.createElement("span");
-    sp.textContent = c;
-    sp.onclick = () => {
-      sp.classList.toggle("active");
-      sp.style.background = sp.classList.contains("active")?"#ff3b3f":"#2a2a2a";
-      activeFilters = [...document.querySelectorAll("#categoryFilter .active")].map(e=>e.textContent);
-      currentPage = 1;
-      renderAnimeList();
-    };
-    categoryFilter.appendChild(sp);
-  });
-  types.forEach(t=>{
-    let sp = document.createElement("span");
-    sp.textContent = t;
-    sp.onclick = () => {
-      sp.classList.toggle("active");
-      sp.style.background = sp.classList.contains("active")?"#28a745":"#2a2a2a";
-      activeTypeFilters = [...document.querySelectorAll("#typeFilter .active")].map(e=>e.textContent);
-      currentPage = 1;
-      renderAnimeList();
-    };
-    typeFilter.appendChild(sp);
-  });
+const categories=["أكشن","مغامرة","رياضي","غموض","كوميدي","دراما","رومانسي","خيال علمي","فانتازيا"];
+const types=["مسلسل","فيلم","ملخّص"];
+let activeFilters=[], activeTypeFilters=[];
 
-  // جلب البيانات من Firebase
-  animesRef.on('value', snap=>{
-    const data = snap.val();
-    if(!data) return; 
-    animes = Array.isArray(data)?data:Object.values(data);
+categories.forEach(c=>{
+ let sp=document.createElement("span");
+ sp.textContent=c;
+ sp.onclick=()=>{
+   sp.classList.toggle("active");
+   sp.style.background=sp.classList.contains("active")?"#ff3b3f":"#2a2a2a";
+   activeFilters=[...categoryFilter.querySelectorAll(".active")].map(e=>e.textContent);
+   renderAnimeList();
+ };
+ categoryFilter.appendChild(sp);
+});
 
-    renderSlider();
-    renderAnimeList();
-    renderSection("mostViewedList",[...animes].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,7));
-    renderSection("actionList", animes.filter(a=>a.category?.includes("أكشن")).slice(0,7));
-    renderSection("seriesList", animes.filter(a=>a.type==="مسلسل").slice(0,7));
-    renderSection("moviesList", animes.filter(a=>a.type==="فيلم").slice(0,7));
-    renderSection("summaryList", animes.filter(a=>a.type==="ملخّص").slice(0,7));
-  });
+types.forEach(t=>{
+ let sp=document.createElement("span");
+ sp.textContent=t;
+ sp.onclick=()=>{
+   sp.classList.toggle("active");
+   sp.style.background=sp.classList.contains("active")?"#28a745":"#2a2a2a";
+   activeTypeFilters=[...typeFilter.querySelectorAll(".active")].map(e=>e.textContent);
+   renderAnimeList();
+ };
+ typeFilter.appendChild(sp);
+});
 
-  // بناء البطاقات العادية
-  function buildCard(anime){
-    const categoryColors = { "أكشن":"#ff3b3f","مغامرة":"#ff9800","رياضي":"#4caf50","غموض":"#9c27b0","كوميدي":"#ffeb3b","دراما":"#03a9f4","رومانسي":"#e91e63","خيال علمي":"#00bcd4","فانتازيا":"#8bc34a" };
-    const card = document.createElement("div");
-    card.className = "anime-card";
-    card.innerHTML = `
-      <div style="position:relative">
-        <img src="${anime.image}">
-        <div class="card-overlay"><h3>${anime.title}</h3></div>
-        ${anime.type ? `<span class="anime-type-badge ${anime.type}">${anime.type}</span>` : ''}
-      </div>
-      <div style="padding:6px 8px; display:flex; flex-wrap:wrap; justify-content:center; gap:4px; background:#2a2a2a; border-top:1px solid #444;">
-        ${(anime.category || []).map(c => `<span style="background:${categoryColors[c]||'#555'}; color:${c==='كوميدي'?'#000':'#fff'}; padding:2px 6px; border-radius:6px; font-size:11px;">${c}</span>`).join('')}
-      </div>`;
-    card.onclick = ()=> location.href = `anime.html?title=${encodeURIComponent(anime.title)}`;
-    return card;
-  }
+animesRef.on('value', snap=>{
+ const data=snap.val(); if(!data) return;
+ animes=Array.isArray(data)?data:Object.values(data);
+ renderSlider();
+ renderAnimeList();
+ renderSection("mostViewedList",[...animes].sort((a,b)=>(b.views||0)-(a.views||0)),"mostViewed");
+ renderSection("actionList",animes.filter(a=>a.category?.includes("أكشن")),"action");
+ renderSection("seriesList",animes.filter(a=>a.type==="مسلسل"),"series");
+ renderSection("moviesList",animes.filter(a=>a.type==="فيلم"),"movies");
+ renderSection("summaryList",animes.filter(a=>a.type==="ملخّص"),"summary");
+});
 
-  // السلايدر
-  function renderSlider(){
-    slidesContainer.innerHTML = "";
-    const categoryColors = { "أكشن":"#ff3b3f","مغامرة":"#ff9800","رياضي":"#4caf50","غموض":"#9c27b0","كوميدي":"#ffeb3b","دراما":"#03a9f4","رومانسي":"#e91e63","خيال علمي":"#00bcd4","فانتازيا":"#8bc34a" };
-    animes.slice(0,7).forEach(a=>{
-      let div = document.createElement("div"); div.className="slide";
-      const typeBadge = a.type?`<span class="anime-type-badge ${a.type}" style="position:absolute;top:10px;left:10px;">${a.type}</span>`:"";
-      const categoryBadges = (a.category||[]).map(c=>`<span style="background:${categoryColors[c]||'#555'}; color:${c==='كوميدي'?'#000':'#fff'}; padding:2px 6px; margin-right:4px; border-radius:5px; font-size:12px;">${c}</span>`).join('');
-      const categoryContainer = `<div style="position:absolute; bottom:10px; left:10px; display:flex; flex-wrap:wrap;">${categoryBadges}</div>`;
-      div.innerHTML = `<div style="position:relative;"><img src="${a.image}" style="width:100%; height:450px; object-fit:cover; border-radius:15px;">${typeBadge}${categoryContainer}</div>`;
-      div.onclick = ()=> location.href = `anime.html?title=${encodeURIComponent(a.title)}`;
-      slidesContainer.appendChild(div);
-    });
-    showSlide();
-  }
+function buildCard(anime){
+  const categoryColors = {
+    "أكشن":"#ff3b3f",
+    "مغامرة":"#ff9800",
+    "رياضي":"#4caf50",
+    "غموض":"#9c27b0",
+    "كوميدي":"#ffeb3b",
+    "دراما":"#03a9f4",
+    "رومانسي":"#e91e63",
+    "خيال علمي":"#00bcd4",
+    "فانتازيا":"#8bc34a"
+  };
 
-  // Drag & Swipe
-  let isDragging=false, startPos=0, currentTranslate=0, prevTranslate=0, animationID=0;
-  slidesContainer.addEventListener('mousedown', dragStart); slidesContainer.addEventListener('touchstart', dragStart);
-  slidesContainer.addEventListener('mouseup', dragEnd); slidesContainer.addEventListener('mouseleave', dragEnd); slidesContainer.addEventListener('touchend', dragEnd);
-  slidesContainer.addEventListener('mousemove', dragMove); slidesContainer.addEventListener('touchmove', dragMove);
-  function dragStart(e){isDragging=true; startPos=getPositionX(e); animationID=requestAnimationFrame(animation);}
-  function dragMove(e){if(!isDragging) return; const currentPosition=getPositionX(e); currentTranslate=prevTranslate+currentPosition-startPos;}
-  function dragEnd(){cancelAnimationFrame(animationID); isDragging=false; const movedBy=currentTranslate-prevTranslate; if(movedBy<-50&&currentIndex<6) currentIndex++; if(movedBy>50&&currentIndex>0) currentIndex--; setPositionByIndex();}
-  function getPositionX(e){return e.type.includes('mouse')?e.pageX:e.touches[0].clientX;}
-  function animation(){setSliderPosition(); if(isDragging) requestAnimationFrame(animation);}
-  function setSliderPosition(){slidesContainer.style.transform=`translateX(${currentTranslate}px)`;}
-  function setPositionByIndex(){currentTranslate=currentIndex*-slidesContainer.offsetWidth; prevTranslate=currentTranslate; slidesContainer.style.transition="transform 0.5s ease"; setSliderPosition(); setTimeout(()=>slidesContainer.style.transition="none",500);}
-  function showSlide(){setPositionByIndex();}
-  window.nextSlide=()=>{if(currentIndex<6) currentIndex++; showSlide();}
-  window.prevSlide=()=>{if(currentIndex>0) currentIndex--; showSlide();}
-  setInterval(()=>{if(currentIndex<6) currentIndex++; else currentIndex=0; showSlide();},5000);
+  const card = document.createElement("div");
+  card.className = "anime-card";
 
-  // البحث + Pagination
-  function renderAnimeList(){
-    animeList.innerHTML = "";
-    const text = searchInput.value.toLowerCase();
-    const filtered = animes.filter(a=>{
-      if(!a.title.toLowerCase().includes(text)) return false;
-      if(activeFilters.length && !a.category?.some(c=>activeFilters.includes(c))) return false;
-      if(activeTypeFilters.length && !activeTypeFilters.includes(a.type)) return false;
-      return true;
-    });
+  card.innerHTML = `
+    <div style="position:relative">
+      <img src="${anime.image}" loading="lazy">
+      
+      <div class="card-overlay"><h3>${anime.title}</h3></div>
+      
+      ${anime.type ? `<span class="anime-type-badge ${anime.type}">${anime.type}</span>` : ''}
 
-    const totalPages = Math.ceil(filtered.length/itemsPerPage);
-    if(currentPage>totalPages) currentPage=totalPages;
-    if(currentPage<1) currentPage=1;
+    </div>
 
-    const start = (currentPage-1)*itemsPerPage;
-    const end = start+itemsPerPage;
-    const pageItems = filtered.slice(start,end);
+    <!-- تصنيفات الأنمي -->
+    <div style="
+      padding:6px 8px;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:4px;
+      background:#2a2a2a;
+      border-top:1px solid #444;
+    ">
+      ${(anime.category || []).map(c => `
+        <span style="
+          background:${categoryColors[c]||'#555'};
+          color:${c==='كوميدي'?'#000':'#fff'};
+          padding:2px 6px;
+          border-radius:6px;
+          font-size:11px;
+        ">${c}</span>
+      `).join('')}
+    </div>
+  `;
 
-    pageItems.forEach(a=>animeList.appendChild(buildCard(a)));
-  }
+  card.onclick = ()=> location.href = `anime.html?title=${encodeURIComponent(anime.title)}`;
+  return card;
+}
 
-  searchInput.oninput=()=>{currentPage=1; renderAnimeList();};
 
-  document.getElementById("prevPage").onclick=()=>{currentPage--; renderAnimeList();};
-  document.getElementById("nextPage").onclick=()=>{currentPage++; renderAnimeList();};
+function renderSlider(){
+ slidesContainer.innerHTML="";
+ const sliderItems = animes.slice(0,7);
+ sliderItems.forEach(a=>{
+   let div=document.createElement("div");
+   div.className="slide";
+   div.innerHTML=`<img src="${a.image}" style="width:100%;height:450px;object-fit:cover">`;
+   div.onclick=()=>location.href=`anime.html?title=${encodeURIComponent(a.title)}`;
+   slidesContainer.appendChild(div);
+ });
+ showSlide();
+}
 
-  // === أقسام + زر "مشاهدة المزيد" النهائي ===
-  function renderSection(id, arr, sectionName){
-    const container=document.getElementById(id);
-    container.innerHTML="";
-    arr.forEach(a=>container.appendChild(buildCard(a)));
-    const more = document.createElement("div");
-    more.className="more-card";
-    more.textContent="مشاهدة المزيد";
-    more.onclick = ()=> location.href = `more.html?section=${sectionName}`;
-    container.appendChild(more);
-  }
+function showSlide(){
+ const width=slidesContainer.offsetWidth;
+ slidesContainer.style.transform=`translateX(${currentIndex * -width}px)`;
+}
 
-  // زر إضافة حلقة
-  window.askPassword=()=>{const p=prompt("كلمة المرور:"); if(p==="a") location.href="add_episode.html"; else alert("كلمة المرور خاطئة");};
+window.nextSlide=()=>{
+ const max = slidesContainer.children.length-1;
+ if(currentIndex<max) currentIndex++; else currentIndex=0;
+ showSlide();
+}
+window.prevSlide=()=>{
+ const max = slidesContainer.children.length-1;
+ if(currentIndex>0) currentIndex--; else currentIndex=max;
+ showSlide();
+}
+setInterval(nextSlide,5000);
+
+function renderAnimeList(){
+ animeList.innerHTML="";
+ const text=searchInput.value.toLowerCase();
+ let filtered=animes.filter(a=>{
+   if(!a.title.toLowerCase().includes(text)) return false;
+   if(activeFilters.length && !a.category?.some(c=>activeFilters.includes(c))) return false;
+   if(activeTypeFilters.length && !activeTypeFilters.includes(a.type)) return false;
+   return true;
+ });
+
+ const start=(currentPage-1)*itemsPerPage;
+ filtered.slice(start,start+itemsPerPage).forEach(a=>animeList.appendChild(buildCard(a)));
+}
+
+document.getElementById("prevPage").onclick=()=>{if(currentPage>1){currentPage--;renderAnimeList();}}
+document.getElementById("nextPage").onclick=()=>{currentPage++;renderAnimeList();}
+searchInput.oninput=()=>{currentPage=1;renderAnimeList();};
+
+function renderSection(id,arr,sectionName){
+ const container=document.getElementById(id);
+ container.innerHTML="";
+ arr.slice(0,7).forEach(a=>container.appendChild(buildCard(a)));
+ const more=document.createElement("div");
+ more.className="more-card";
+ more.textContent="مشاهدة المزيد";
+ more.onclick=()=>location.href=`more.html?section=${sectionName}`;
+ container.appendChild(more);
+}
+
 });
 </script>
-<!-- ===== AnimeZine Footer ===== -->
-<style>
-.site-footer {
-  background: #0b0b0b;
-  padding: 30px 10px;
-  text-align: center;
-  margin-top: 40px;
-  border-top: 2px solid #00c3ff;
-}
-
-.site-footer h3 {
-  color: #00c3ff;
-  margin-bottom: 10px;
-}
-
-.site-footer p {
-  color: #cccccc;
-  font-size: 15px;
-  margin: 5px 0;
-}
-
-.site-footer a {
-  color: #00c3ff;
-  text-decoration: none;
-  margin: 0 8px;
-  font-size: 15px;
-}
-
-.site-footer a:hover {
-  text-decoration: underline;
-}
-</style>
-
-<footer class="site-footer">
-
-  <h3>AnimeZine</h3>
-  <p>موقع عربي لعشاق الأنمي – ملخصات، أخبار ومراجعات</p>
-
-  <div>
-    <a href="index.html">الرئيسية</a>  |
-    <a href="articles.html">مقلات الأنمي</a> |
-    <a href="about.html">من نحن</a> |
-    <a href="privacy.html">سياسة الخصوصية</a> |
-    <a href="contact.html">اتصل بنا</a>
-  </div>
-
-  <p>© 2026 AnimeZine - جميع الحقوق محفوظة</p>
-
-</footer>
-<!-- ===== End Footer ===== -->
 
 </body>
 </html>
