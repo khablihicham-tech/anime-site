@@ -1,26 +1,151 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+
+<style>
+.top-header{
+  background:#FF3B3F;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  direction: rtl;
+}
+
+.logo img{
+  height:45px;
+}
+
+.nav-links{
+  display:flex;
+  gap:20px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.nav-links a{
+  color:#000;
+  text-decoration:none;
+}
+
+.nav-links a:hover{
+  color:#ff3b3f;
+}
+
+.search-btn{
+  background:#ffffff;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.search-btn img{
+  width:18px;
+}
+</style>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مشاهدة المزيد</title>
 
 <style>
-body{background:#121212;color:white;font-family:Arial;margin:0}
-header{background:#ff3b3f;padding:15px;text-align:center;font-size:22px;font-weight:bold}
-.anime-list{display:flex;flex-wrap:wrap;gap:12px;padding:15px;justify-content:center}
+body {font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0;}
 
-.anime-card{background:#1e1e1e;width:180px;border-radius:12px;overflow:hidden;cursor:pointer;transition:0.3s}
-.anime-card:hover{transform:scale(1.05);box-shadow:0 0 12px #ff3b3f;}
-.anime-card img{width:100%;height:220px;object-fit:cover}
+#moreList{
+ display:flex;
+ flex-wrap:wrap;
+ gap:12px;
+ justify-content:center;
+ padding:15px;
+}
 
-.card-title{padding:6px;text-align:center;font-size:14px}
+.anime-card {
+ background:#1e1e1e;
+ width:180px;
+ border-radius:12px;
+ overflow:hidden;
+ cursor:pointer;
+ transition:0.3s;
+ position:relative;
+}
+
+.anime-card:hover {
+ transform:scale(1.05);
+ box-shadow:0 0 15px #ff3b3f;
+}
+
+.anime-card img{
+ width:100%;
+ height:220px;
+ object-fit:cover;
+}
+
+.card-overlay{
+ position:absolute;
+ inset:0;
+ background:rgba(0,0,0,0.7);
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ opacity:0;
+ transition:0.3s;
+ text-align:center;
+}
+
+.anime-card:hover .card-overlay{opacity:1;}
+
+.anime-type-badge {
+ position:absolute;
+ top:8px;
+ left:8px;
+ padding:4px 8px;
+ border-radius:5px;
+ font-size:12px;
+ font-weight:bold;
+ color:#fff;
+}
+
+.anime-type-badge.مسلسل{background:#28a745;}
+.anime-type-badge.فيلم{background:#ff3b3f;}
+.anime-type-badge.ملخّص{background:#ff9800;}
 </style>
 </head>
+
 <body>
 
-<header id="sectionTitle">مشاهدة المزيد</header>
-<div class="anime-list" id="moreList"></div>
+<!-- ===== Top Navigation Bar ===== -->
+<div class="top-header">
+
+  <!-- زر البحث -->
+  <div class="search-btn" onclick="document.getElementById('searchInput').focus()">
+    <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png">
+  </div>
+
+  <!-- روابط المنيو -->
+  <div class="nav-links">
+   <a href="index.html">الرئيسية</a>
+<a href="articles.html">مقالات الأنمي</a>
+<a href="#" id="moviesLink">أفلام الأنمي</a>
+<a href="#" id="seriesLink">مسلسلات الأنمي</a>
+<a href="schedule.html">ملخصات الأنمي</a>
+<a href="contact.html">اتصل بنا</a>
+
+  </div>
+
+  <!-- اللوغو -->
+  <div class="logo">
+    <img src="https://i.postimg.cc/X7qqxbYp/logo.png" alt="AnimeZine">
+  </div>
+
+</div>
+
+<!-- ===== Anime List ===== -->
+<div id="moreList"></div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -36,64 +161,56 @@ const firebaseConfig = {
  messagingSenderId: "666495369108",
  appId: "1:666495369108:web:aabf062e066cea6c3b9981"
 };
+
 firebase.initializeApp(firebaseConfig);
 const animesRef = firebase.database().ref('animes');
 
-const moreList = document.getElementById("moreList");
-const sectionTitle = document.getElementById("sectionTitle");
+// جلب النوع من الرابط
+const urlParams = new URLSearchParams(window.location.search);
+const typeFilter = urlParams.get("type"); // فيلم أو مسلسل
 
-// قراءة القسم من الرابط
-const params = new URLSearchParams(window.location.search);
-const section = params.get("section");
-
-// عناوين الأقسام
-const titles = {
-  mostViewed: "🔥 الأكثر مشاهدة",
-  action: "💥 أنمي أكشن",
-  series: "📺 مسلسلات",
-  movies: "🎬 أفلام",
-  summary: "📝 ملخّصات"
-};
-sectionTitle.textContent = titles[section] || "مشاهدة المزيد";
-
-// بناء بطاقة
+// بناء كارد الأنمي
 function buildCard(anime){
   const card = document.createElement("div");
   card.className="anime-card";
-  card.innerHTML = `
-    <img src="${anime.image}">
-    <div class="card-title">${anime.title}</div>
+  card.innerHTML=`
+    <div style="position:relative">
+      <img src="${anime.image}" loading="lazy">
+      <div class="card-overlay"><h3>${anime.title}</h3></div>
+      ${anime.type ? `<span class="anime-type-badge ${anime.type}">${anime.type}</span>` : ''}
+    </div>
   `;
-  card.onclick = ()=> location.href=`anime.html?title=${encodeURIComponent(anime.title)}`;
+  card.onclick = ()=> location.href = `anime.html?title=${encodeURIComponent(anime.title)}`;
   return card;
 }
 
-// جلب البيانات وعرض حسب القسم
+// عرض الأنمي
 animesRef.on('value', snap=>{
   const data = snap.val();
   if(!data) return;
-  let animes = Array.isArray(data)?data:Object.values(data);
 
-  let filtered = [];
+  let animes = Array.isArray(data) ? data : Object.values(data);
 
-  if(section==="mostViewed")
-    filtered = [...animes].sort((a,b)=>(b.views||0)-(a.views||0));
+  // فلترة حسب النوع من الرابط فقط
+  if(typeFilter){
+    animes = animes.filter(a => a.type === typeFilter);
+  }
 
-  if(section==="action")
-    filtered = animes.filter(a=>a.category?.includes("أكشن"));
-
-  if(section==="series")
-    filtered = animes.filter(a=>a.type==="مسلسل");
-
-  if(section==="movies")
-    filtered = animes.filter(a=>a.type==="فيلم");
-
-  if(section==="summary")
-    filtered = animes.filter(a=>a.type==="ملخّص");
-
-  moreList.innerHTML="";
-  filtered.forEach(a=>moreList.appendChild(buildCard(a)));
+  const container = document.getElementById("moreList");
+  container.innerHTML = "";
+  animes.forEach(a => container.appendChild(buildCard(a)));
 });
+
+// روابط الهيدر
+document.getElementById("moviesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=فيلم";
+};
+
+document.getElementById("seriesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=مسلسل";
+};
 </script>
 
 </body>
