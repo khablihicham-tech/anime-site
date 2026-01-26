@@ -138,12 +138,13 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 
   <!-- روابط المنيو -->
   <div class="nav-links">
-    <a href="index.html">الرئيسية</a>
-    <a href="articles.html">مقلات الأنمي</a>
-    <a href="movies.html">أفلام الأنمي</a>
-    <a href="seasons.html">مسلسلات الأنمي</a>
-    <a href="schedule.html">ملخصات الأنمي</a>
-    <a href="contact.html">اتصل بنا</a>
+   <a href="index.html">الرئيسية</a>
+<a href="articles.html">مقالات الأنمي</a>
+<a href="#" id="moviesLink">أفلام الأنمي</a>
+<a href="#" id="seriesLink">مسلسلات الأنمي</a>
+<a href="#" id="schedulink">ملخصات الأنمي</a>
+<a href="contact.html">اتصل بنا</a>
+
   </div>
 
   <!-- اللوغو -->
@@ -181,6 +182,16 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 <div class="anime-section"><h2>📺 مسلسلات</h2><div class="anime-list" id="seriesList"></div></div>
 <div class="anime-section"><h2>🎬 أفلام</h2><div class="anime-list" id="moviesList"></div></div>
 <div class="anime-section"><h2>📝 ملخّصات</h2><div class="anime-list" id="summaryList"></div></div>
+
+<footer class="site-footer">
+  <nav>
+<a href="index.html">الرئيسية</a> |
+<a href="about.html">من نحن</a> |
+<a href="privacy.html">سياسة الخصوصية</a> |
+<a href="contact.html">اتصل بنا</a>
+</nav>
+<p>© 2026 AnimeZine</p>
+</footer>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -364,6 +375,26 @@ function renderSection(id,arr,sectionName){
 }
 
 });
+
+// لما يضغط على "أفلام الأنمي"
+document.getElementById("moviesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=فيلم";
+}
+
+// لما يضغط على "مسلسلات الأنمي"
+document.getElementById("seriesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=مسلسل";
+}
+
+// لما يضغط على "ملخصات الأنمي"
+document.getElementById("schedulink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=ملخّص";
+}
+
+
 </script>
 
 </body>
