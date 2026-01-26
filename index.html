@@ -1,6 +1,56 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+
+<style>
+.top-header{
+  background:#FF3B3F;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  direction: rtl;
+}
+
+.logo img{
+  height:45px;
+}
+
+.nav-links{
+  display:flex;
+  gap:20px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.nav-links a{
+  color:#000;
+  text-decoration:none;
+}
+
+.nav-links a:hover{
+  color:#ff3b3f;
+}
+
+.search-btn{
+  background:#ffffff;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.search-btn img{
+  width:18px;
+}
+</style>
+
+
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الأنمي زين</title>
@@ -78,7 +128,33 @@ header { background:#ff3b3f; padding:20px; text-align:center; font-size:28px; fo
 
 <body>
 
-<header>الأنمي زين</header>
+<!-- ===== Top Navigation Bar ===== -->
+<div class="top-header">
+
+  <!-- زر البحث -->
+  <div class="search-btn" onclick="document.getElementById('searchInput').focus()">
+    <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png">
+  </div>
+
+  <!-- روابط المنيو -->
+  <div class="nav-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="articles.html">مقلات الأنمي</a>
+    <a href="movies.html">أفلام الأنمي</a>
+    <a href="seasons.html">مسلسلات الأنمي</a>
+    <a href="schedule.html">ملخصات الأنمي</a>
+    <a href="contact.html">اتصل بنا</a>
+  </div>
+
+  <!-- اللوغو -->
+  <div class="logo">
+    <img src="https://i.postimg.cc/X7qqxbYp/logo.png" alt="AnimeZine">
+  </div>
+
+</div>
+
+
+
 
 <div class="slider">
   <div class="slides" id="slides"></div>
