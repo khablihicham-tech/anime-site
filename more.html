@@ -132,7 +132,7 @@ body {font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0;}
 <a href="articles.html">مقالات الأنمي</a>
 <a href="#" id="moviesLink">أفلام الأنمي</a>
 <a href="#" id="seriesLink">مسلسلات الأنمي</a>
-<a href="schedule.html">ملخصات الأنمي</a>
+<a href="#" id="schedulink"">ملخصات الأنمي</a>
 <a href="contact.html">اتصل بنا</a>
 
   </div>
@@ -211,6 +211,25 @@ document.getElementById("seriesLink").onclick = (e)=>{
   e.preventDefault();
   location.href = "more.html?type=مسلسل";
 };
+
+// لما يضغط على "أفلام الأنمي"
+document.getElementById("moviesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=فيلم";
+}
+
+// لما يضغط على "مسلسلات الأنمي"
+document.getElementById("seriesLink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=مسلسل";
+}
+
+// لما يضغط على "ملخصات الأنمي"
+document.getElementById("schedulink").onclick = (e)=>{
+  e.preventDefault();
+  location.href = "more.html?type=ملخّص";
+}
+
 </script>
 
 </body>
