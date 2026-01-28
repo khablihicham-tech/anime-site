@@ -204,15 +204,23 @@ const container = document.getElementById("articles-container");
 const controls = document.getElementById("controls-container");
 let articles = window.articles || [];
 
-// 🔴 ضع رابط SmartLink Adsterra هنا
 const adLink = "https://www.effectivegatecpm.com/sw624wnv?key=14bf2d9992f14a961565f1b412d5979b";
 
-displayArticles(articles);
+// ✅ متغيرات الباجيناشن
+let currentPage = 1;
+const cardsPerPage = 24;
+let filteredArticles = articles; // باش نحافظو على المقالات بعد الفلترة
+
+displayArticlesPage(currentPage);
 createFilterButtons();
 
-function displayArticles(list){
+function displayArticlesPage(page){
   container.innerHTML = "";
-  list.forEach((article, index) => {
+  const start = (page - 1) * cardsPerPage;
+  const end = start + cardsPerPage;
+  const articlesToShow = filteredArticles.slice(start, end);
+
+  articlesToShow.forEach((article, index) => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -220,14 +228,48 @@ function displayArticles(list){
       <div class="card-content">
         <h3>${article.title}</h3>
         <p>${article.description}</p>
-        <a onclick="handleEpisodeClick(${index})">اقرأ المزيد</a>
+        <a onclick="handleEpisodeClick(${articles.indexOf(article)})">اقرأ المزيد</a>
       </div>
     `;
     container.appendChild(card);
   });
+
+  renderPagination();
 }
 
-// ✅ نظام الإعلان قبل الدخول
+// ✅ توليد أزرار الصفحات
+function renderPagination(){
+  let pagination = document.getElementById("pagination");
+  if(!pagination){
+    pagination = document.createElement("div");
+    pagination.id = "pagination";
+    pagination.style.textAlign = "center";
+    pagination.style.marginTop = "20px";
+    container.parentNode.appendChild(pagination);
+  }
+
+  pagination.innerHTML = "";
+  const totalPages = Math.ceil(filteredArticles.length / cardsPerPage);
+
+  for(let i=1; i<=totalPages; i++){
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.style.margin = "0 5px";
+    btn.style.padding = "5px 10px";
+    btn.style.border = "none";
+    btn.style.borderRadius = "5px";
+    btn.style.cursor = "pointer";
+    btn.style.background = (i === currentPage) ? "#00c3ff" : "#1a1a1a";
+    btn.style.color = (i === currentPage) ? "#fff" : "#00c3ff";
+    btn.onclick = () => {
+      currentPage = i;
+      displayArticlesPage(currentPage);
+    };
+    pagination.appendChild(btn);
+  }
+}
+
+// نظام الإعلان قبل الدخول
 function handleEpisodeClick(id){
   let count = localStorage.getItem("click_counter");
 
@@ -236,28 +278,31 @@ function handleEpisodeClick(id){
 
   localStorage.setItem("click_counter", count);
 
-  // الضغطة الأولى → إعلان
   if(count === 1){
     window.open(adLink, "_blank");
-  }
-
-  // الضغطة الثانية → دخول الحلقة
-  else if(count === 2){
+  } else if(count === 2){
     window.location.href = "article.html?id=" + id;
     localStorage.setItem("click_counter", 0);
   }
 }
 
+// فلترة المقالات
 function filterArticles(category){
-  if(category === "all") displayArticles(articles);
-  else displayArticles(articles.filter(a => a.categories.includes(category)));
+  if(category === "all") filteredArticles = articles;
+  else filteredArticles = articles.filter(a => a.categories.includes(category));
+  currentPage = 1;
+  displayArticlesPage(currentPage);
 }
 
+// البحث
 function searchArticles(){
   const q = document.getElementById("searchInput").value.toLowerCase();
-  displayArticles(articles.filter(a => a.title.toLowerCase().includes(q)));
+  filteredArticles = articles.filter(a => a.title.toLowerCase().includes(q));
+  currentPage = 1;
+  displayArticlesPage(currentPage);
 }
 
+// إنشاء أزرار الفلترة
 function createFilterButtons(){
   const set = new Set();
   articles.forEach(a => a.categories.forEach(c => set.add(c)));
@@ -269,26 +314,13 @@ function createFilterButtons(){
   });
 }
 
-// لما يضغط على "أفلام الأنمي"
-document.getElementById("moviesLink").onclick = (e)=>{
-  e.preventDefault();
-  location.href = "more.html?type=فيلم";
-}
-
-// لما يضغط على "مسلسلات الأنمي"
-document.getElementById("seriesLink").onclick = (e)=>{
-  e.preventDefault();
-  location.href = "more.html?type=مسلسل";
-}
-
-// لما يضغط على "ملخصات الأنمي"
-document.getElementById("schedulink").onclick = (e)=>{
-  e.preventDefault();
-  location.href = "more.html?type=ملخّص";
-}
-
+// روابط القوائم
+document.getElementById("moviesLink").onclick = (e)=>{ e.preventDefault(); location.href = "more.html?type=فيلم"; }
+document.getElementById("seriesLink").onclick = (e)=>{ e.preventDefault(); location.href = "more.html?type=مسلسل"; }
+document.getElementById("schedulink").onclick = (e)=>{ e.preventDefault(); location.href = "more.html?type=ملخّص"; }
 
 </script>
+
 
 </body>
 </html>
