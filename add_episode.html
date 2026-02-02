@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إدارة الأنمي</title>
+
 <style>
 body { font-family: Arial, sans-serif; background:#121212; color:#fff; margin:0; }
 header { background:#ff3b3f; padding:15px; text-align:center; font-size:24px; font-weight:bold; }
 .container { max-width:900px; margin:auto; padding:15px; }
 form { background:#1c1c1c; padding:15px; border-radius:8px; margin-bottom:20px; }
-input { width:100%; margin:6px 0; padding:10px; border-radius:5px; border:none; font-size:15px; }
+input, select { width:100%; margin:6px 0; padding:10px; border-radius:5px; border:none; font-size:15px; }
 button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-size:15px; }
 .btn-add { background:#28a745; color:white; }
 .btn-delete { background:#dc3545; color:white; }
@@ -19,15 +20,17 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 .category-box { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
 .category-box span { background:#2a2a2a; padding:6px 14px; border-radius:20px; cursor:pointer; }
 .category-box span.active { background:#ff3b3f; }
-.episodeRow input { margin-bottom:0; }
 </style>
 </head>
+
 <body>
 
 <header>إدارة الأنمي</header>
+
 <div class="container">
 
 <form id="episodeForm">
+
 <input type="text" id="animeName" placeholder="اسم الأنمي">
 
 <label>تصنيفات الأنمي</label>
@@ -51,20 +54,19 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 
 <input type="text" id="animeImage" placeholder="رابط صورة الأنمي">
 <button type="submit" class="btn-add">حفظ</button>
+
 </form>
 
-<!-- بحث + فلترة -->
+<!-- البحث و الفلترة -->
 <div style="display:flex;gap:10px;margin:15px 0;">
-  <input type="text" id="searchInput" placeholder="🔍 بحث عن أنمي..." style="flex:2; padding:10px; border-radius:5px; border:none;">
-  
-  <select id="filterType" style="flex:1; padding:10px; border-radius:5px; border:none;">
+  <input type="text" id="searchInput" placeholder="🔍 بحث عن أنمي...">
+  <select id="filterType">
     <option value="">الكل حسب النوع</option>
     <option value="مسلسل">مسلسل</option>
     <option value="فيلم">فيلم</option>
     <option value="ملخّص">ملخّص</option>
   </select>
-
-  <select id="filterCategory" style="flex:1; padding:10px; border-radius:5px; border:none;">
+  <select id="filterCategory">
     <option value="">الكل حسب التصنيف</option>
     <option value="أكشن">أكشن</option>
     <option value="مغامرة">مغامرة</option>
@@ -79,6 +81,7 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 </div>
 
 <div id="animeList"></div>
+
 </div>
 
 <!-- Firebase -->
@@ -86,7 +89,6 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; font-
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// ===== Firebase Config =====
 const firebaseConfig = {
  apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
  authDomain: "appp-1234.firebaseapp.com",
@@ -96,6 +98,7 @@ const firebaseConfig = {
  messagingSenderId: "666495369108",
  appId: "1:666495369108:web:aabf062e066cea6c3b9981"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const animesRef = db.ref("animes");
@@ -103,154 +106,129 @@ const animesRef = db.ref("animes");
 let animes = [];
 let editIndex = null;
 
-// تحميل البيانات
-animesRef.on("value", snapshot=>{
+/* تحميل البيانات */
+animesRef.on("value", snapshot => {
  const data = snapshot.val();
- if(data){ animes = data; }
+ animes = data ? Object.values(data) : [];
  renderAnimeList();
 });
 
-function saveData(){ animesRef.set(animes); }
-
-// ===== اختيار التصنيفات =====
+/* التصنيفات */
 document.querySelectorAll("#categoryBox span").forEach(span=>{
- span.addEventListener("click",()=> span.classList.toggle("active"));
+ span.onclick = () => span.classList.toggle("active");
 });
 
-// ===== إضافة سطر حلقة =====
+/* إضافة حلقة */
 function addEpisodeRow(num="", link=""){
- const container = document.getElementById("episodesContainer");
- const row = document.createElement("div");
- row.className="episodeRow";
- row.style.display="flex";
- row.style.gap="10px";
- row.style.marginBottom="5px";
- row.innerHTML=`
-   <input type="text" class="episodeNumber" placeholder="رقم الحلقة" style="flex:1;" value="${num}">
-   <input type="text" class="episodeLink" placeholder="رابط الحلقة" style="flex:3;" value="${link}">
-   <button type="button" onclick="this.parentElement.remove()" style="background:#dc3545;color:white;border:none;border-radius:5px;">✖</button>
- `;
- container.appendChild(row);
+ const c = document.getElementById("episodesContainer");
+ const d = document.createElement("div");
+ d.style.display="flex";
+ d.style.gap="10px";
+ d.innerHTML = `
+ <input class="epNum" placeholder="رقم الحلقة" value="${num}">
+ <input class="epLink" placeholder="رابط الحلقة" value="${link}">
+ <button onclick="this.parentElement.remove()" class="btn-delete">✖</button>`;
+ c.appendChild(d);
 }
-
-// عند فتح الصفحة → سطر حلقة واحد
 addEpisodeRow();
 
-// جمع الحلقات
+/* جمع الحلقات */
 function collectEpisodes(){
- const episodes=[];
- document.querySelectorAll(".episodeRow").forEach(row=>{
-   const num = row.querySelector(".episodeNumber").value.trim();
-   const link = row.querySelector(".episodeLink").value.trim();
-   if(num && link){
-     episodes.push({title:"الحلقة "+num, video:link});
-   }
+ const eps=[];
+ document.querySelectorAll("#episodesContainer div").forEach(r=>{
+  const n=r.querySelector(".epNum").value.trim();
+  const l=r.querySelector(".epLink").value.trim();
+  if(n&&l) eps.push({title:"الحلقة "+n, video:l});
  });
- return episodes;
+ return eps;
 }
 
-// ===== حفظ أو تعديل الأنمي =====
-episodeForm.addEventListener("submit", e=>{
+/* حفظ */
+episodeForm.onsubmit = e =>{
  e.preventDefault();
- const title = animeName.value.trim();
- const seasonVal = season.value.trim();
- const imgVal = animeImage.value.trim();
- const selectedCategories = Array.from(document.querySelectorAll("#categoryBox span.active")).map(e=>e.textContent);
- const selectedType = document.querySelector('input[name="animeType"]:checked').value;
- const episodes = collectEpisodes();
+ const title=animeName.value.trim();
+ const seasonVal=season.value.trim();
+ const img=animeImage.value.trim();
+ const type=document.querySelector('input[name="animeType"]:checked').value;
+ const cat=[...document.querySelectorAll("#categoryBox .active")].map(s=>s.textContent);
+ const episodes=collectEpisodes();
 
- if(title=="" || seasonVal=="" || selectedCategories.length==0 || episodes.length==0){
-   alert("عمر جميع الخانات المطلوبة");
-   return;
+ if(!title||!seasonVal||!cat.length||!episodes.length){
+  alert("عمر جميع الخانات");
+  return;
  }
 
- if(editIndex !== null){
-   animes[editIndex] = {title, season:seasonVal, image:imgVal, category:selectedCategories, type:selectedType, episodes};
-   editIndex = null;
- } else {
-   animes.unshift({title, season:seasonVal, image:imgVal, category:selectedCategories, type:selectedType, episodes});
+ const obj={title,season:seasonVal,image:img,type,category:cat,episodes};
+
+ if(editIndex!==null){
+  animes[editIndex]=obj;
+  editIndex=null;
+ }else{
+  animes.unshift(obj);
  }
 
- saveData();
- renderAnimeList();
+ animesRef.set(animes);
+
  episodeForm.reset();
  document.getElementById("episodesContainer").innerHTML="";
  addEpisodeRow();
  document.querySelectorAll("#categoryBox span").forEach(s=>s.classList.remove("active"));
-});
+ document.querySelector('input[value="مسلسل"]').checked=true;
+};
 
-// ===== عرض الأنميات مع البحث + فلترة =====
+/* عرض */
 function renderAnimeList(){
- const list=document.getElementById("animeList");
+ const list=animeList;
  list.innerHTML="";
- let filtered=[...animes];
+ let f=[...animes];
 
- // 🔍 البحث بالاسم
- const searchValue=document.getElementById("searchInput").value.toLowerCase();
- if(searchValue) filtered = filtered.filter(a => a.title.toLowerCase().includes(searchValue));
+ const s=searchInput.value.toLowerCase();
+ if(s) f=f.filter(a=>a.title && a.title.toLowerCase().includes(s));
 
- // فلترة النوع
- const filterType = document.getElementById("filterType").value;
- if(filterType) filtered = filtered.filter(a => a.type === filterType);
+ if(filterType.value) f=f.filter(a=>a.type===filterType.value);
+ if(filterCategory.value) f=f.filter(a=>a.category.includes(filterCategory.value));
 
- // فلترة التصنيف
- const filterCategory = document.getElementById("filterCategory").value;
- if(filterCategory) filtered = filtered.filter(a => a.category.includes(filterCategory));
-
- filtered.forEach(anime=>{
-   const realIndex = animes.indexOf(anime);
-   const div=document.createElement("div");
-   div.className="anime-card";
-   div.innerHTML=`
-     <img src="${anime.image}">
-     <div style="flex:1">
-       <h3>${anime.title} - ${anime.season} (${anime.type})</h3>
-       <p>عدد الحلقات: ${anime.episodes.length}</p>
-       <button class="btn-edit" onclick="editAnime(${realIndex})">✏️ تعديل</button>
-       <button class="btn-delete" onclick="deleteAnime(${realIndex})">🗑️ حذف</button>
-     </div>
-   `;
-   list.appendChild(div);
+ f.forEach(a=>{
+  const i=animes.indexOf(a);
+  list.innerHTML+=`
+  <div class="anime-card">
+   <img src="${a.image}">
+   <div>
+    <h3>${a.title} - ${a.season} (${a.type})</h3>
+    <p>عدد الحلقات: ${a.episodes.length}</p>
+    <button class="btn-edit" onclick="editAnime(${i})">تعديل</button>
+    <button class="btn-delete" onclick="deleteAnime(${i})">حذف</button>
+   </div>
+  </div>`;
  });
 }
 
-// ===== حذف أنمي =====
-function deleteAnime(index){
- if(confirm("متأكد تحذف الأنمي؟")){
-   animes.splice(index,1);
-   saveData();
-   renderAnimeList();
+function deleteAnime(i){
+ if(confirm("متأكد؟")){
+  animes.splice(i,1);
+  animesRef.set(animes);
  }
 }
 
-// ===== تعديل أنمي + جميع الحلقات =====
-function editAnime(index){
- const anime = animes[index];
- editIndex = index;
- animeName.value = anime.title;
- season.value = anime.season;
- animeImage.value = anime.image;
- document.querySelectorAll('input[name="animeType"]').forEach(r=>{ r.checked = (r.value==anime.type); });
- document.querySelectorAll("#categoryBox span").forEach(span=>{
-   span.classList.remove("active");
-   if(anime.category.includes(span.textContent)) span.classList.add("active");
+function editAnime(i){
+ const a=animes[i];
+ editIndex=i;
+ animeName.value=a.title;
+ season.value=a.season;
+ animeImage.value=a.image;
+ document.querySelectorAll('input[name="animeType"]').forEach(r=>r.checked=r.value==a.type);
+ document.querySelectorAll("#categoryBox span").forEach(s=>{
+  s.classList.toggle("active",a.category.includes(s.textContent));
  });
- const container = document.getElementById("episodesContainer");
- container.innerHTML="";
- anime.episodes.forEach(ep=>{
-   const num = ep.title.replace("الحلقة ","");
-   addEpisodeRow(num, ep.video);
- });
+ episodesContainer.innerHTML="";
+ a.episodes.forEach(e=>addEpisodeRow(e.title.replace("الحلقة ",""),e.video));
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// ===== أحداث البحث والفلترة =====
-document.getElementById("searchInput").addEventListener("input", renderAnimeList);
-document.getElementById("filterType").addEventListener("change", renderAnimeList);
-document.getElementById("filterCategory").addEventListener("change", renderAnimeList);
-
-// عرض عند تحميل الصفحة
-renderAnimeList();
+searchInput.oninput=renderAnimeList;
+filterType.onchange=renderAnimeList;
+filterCategory.onchange=renderAnimeList;
 </script>
+
 </body>
 </html>
