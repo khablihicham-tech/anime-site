@@ -259,10 +259,10 @@ animesRef.on('value', snap=>{
  renderSlider();
  renderAnimeList();
  renderSection("mostViewedList",[...animes].sort((a,b)=>(b.views||0)-(a.views||0)),"mostViewed");
- renderSection("actionList",animes.filter(a=>a.category?.includes("أكشن")),"action");
- renderSection("seriesList",animes.filter(a=>a.type==="مسلسل"),"series");
- renderSection("moviesList",animes.filter(a=>a.type==="فيلم"),"movies");
- renderSection("summaryList",animes.filter(a=>a.type==="ملخّص"),"summary");
+ renderSection("actionList",animes.filter(a=>a.category?.includes("أكشن")),"أكشن");
+ renderSection("seriesList",animes.filter(a=>a.type==="مسلسل"),"مسلسل");
+ renderSection("moviesList",animes.filter(a=>a.type==="فيلم"),"فيلم");
+ renderSection("summaryList",animes.filter(a=>a.type==="ملخّص"),"ملخّص");
 });
 
 function buildCard(anime){
@@ -362,7 +362,7 @@ function renderSection(id,arr,sectionName){
  const more=document.createElement("div");
  more.className="more-card";
  more.textContent="مشاهدة المزيد";
- more.onclick=()=>location.href=`more.html?section=${sectionName}`;
+ more.onclick=()=>location.href=`more.html?type=${sectionName}`;
  container.appendChild(more);
 }
 
