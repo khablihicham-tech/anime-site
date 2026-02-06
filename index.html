@@ -199,6 +199,7 @@ footer.site-footer nav a:hover{color:#ff3b3f;}
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
+
 const firebaseConfig = {
  apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
  authDomain: "appp-1234.firebaseapp.com",
@@ -263,6 +264,32 @@ animesRef.on('value', snap=>{
  renderSection("seriesList",animes.filter(a=>a.type==="مسلسل"),"مسلسل");
  renderSection("moviesList",animes.filter(a=>a.type==="فيلم"),"فيلم");
  renderSection("summaryList",animes.filter(a=>a.type==="ملخّص"),"ملخّص");
+});
+
+const db = firebase.database();
+
+/* تسجيل زائر */
+db.ref("visitors").transaction(v => (v || 0) + 1);
+
+/* تسجيل المشاهدات اليومية */
+const today = new Date().toISOString().split("T")[0];
+db.ref("dailyViews/"+today).transaction(v => (v || 0) + 1);
+
+/* الزوار الأونلاين */
+const online = db.ref("onlineUsers");
+
+online.transaction(v => (v || 0) + 1);
+
+window.addEventListener("beforeunload", ()=>{
+ online.transaction(v => Math.max((v || 1) - 1,0));
+});
+
+/* دولة الزائر */
+fetch("https://ipapi.co/json/")
+.then(res=>res.json())
+.then(data=>{
+ db.ref("countries/"+data.country_name)
+ .transaction(v => (v || 0) + 1);
 });
 
 function buildCard(anime){
