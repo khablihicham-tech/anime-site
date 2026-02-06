@@ -135,6 +135,7 @@ iframe{
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
+
 // ===== Firebase =====
 firebase.initializeApp({
   apiKey: "AIzaSyBYEyu6TxSv1qSLCRvr0YCdaVcewhxAmQY",
@@ -145,6 +146,35 @@ firebase.initializeApp({
 
 const db = firebase.database();
 const ref = db.ref("animes");
+
+/* ================== إحصائيات الزوار ================== */
+
+/* تسجيل زائر */
+db.ref("visitors").transaction(v => (v || 0) + 1);
+
+/* تسجيل المشاهدات اليومية */
+const today = new Date().toISOString().split("T")[0];
+db.ref("dailyViews/"+today).transaction(v => (v || 0) + 1);
+
+/* الزوار الأونلاين */
+const online = db.ref("onlineUsers");
+
+online.transaction(v => (v || 0) + 1);
+
+window.addEventListener("beforeunload", ()=>{
+ online.transaction(v => Math.max((v || 1) - 1,0));
+});
+
+/* دولة الزائر */
+fetch("https://ipapi.co/json/")
+.then(res=>res.json())
+.then(data=>{
+ db.ref("countries/"+data.country_name)
+ .transaction(v => (v || 0) + 1);
+});
+
+
+/* ================== تحميل الأنمي ================== */
 
 const params = new URLSearchParams(location.search);
 const animeTitle = params.get("title");
@@ -161,36 +191,47 @@ ref.once("value", snap=>{
 });
 
 function showAnime(anime, key){
+
+  const categories = Array.isArray(anime.category)
+    ? anime.category.join("، ")
+    : "غير محدد";
+
   document.getElementById("animeContainer").innerHTML = `
     <img src="${anime.image}" class="anime-img">
     <h2>${anime.title}</h2>
-    <div class="anime-categories">التصنيفات: ${anime.category.join("، ")}</div>
-    <div class="anime-type">النوع: ${anime.type}</div>
+    <div class="anime-categories">التصنيفات: ${categories}</div>
+    <div class="anime-type">النوع: ${anime.type || "-"}</div>
     <div class="view-counter">👁 ${(anime.views||0)+1} مشاهدة</div>
-    <h3>${anime.season}</h3>
+    <h3>${anime.season || ""}</h3>
     <div id="episodeList"></div>
   `;
 
+  // زيادة المشاهدات
   db.ref("animes/"+key+"/views").transaction(v=>(v||0)+1);
 
   const list = document.getElementById("episodeList");
-  anime.episodes.forEach(ep=>{
-    const b = document.createElement("button");
-    b.textContent = ep.title;
-    b.onclick = ()=> openModal(ep.video);
-    list.appendChild(b);
-  });
+
+  if(anime.episodes){
+    anime.episodes.forEach(ep=>{
+      const b = document.createElement("button");
+      b.textContent = ep.title;
+      b.onclick = ()=> openModal(ep.video);
+      list.appendChild(b);
+    });
+  }
+
 }
+
 
 // ===== تمييز التاريخ =====
 function isDate(v){
   return /^\d{2}\/\d{2}\/\d{4}$/.test(v);
 }
 
+
 // ===== تشغيل الحلقة =====
 function openModal(videoUrl){
 
-  // 📅 تاريخ → صفحة الموعد
   if(isDate(videoUrl)){
     location.href =
       `episode-date.html?date=${encodeURIComponent(videoUrl)}&anime=${encodeURIComponent(animeTitle)}`;
@@ -198,11 +239,16 @@ function openModal(videoUrl){
   }
 
   const adLink="https://www.effectivegatecpm.com/g31pp6c9?key=08a82cb4c410cfb14ad1a25abef6221d";
+
   let c=sessionStorage.getItem("episodeClicks")||0;
   c++;
   sessionStorage.setItem("episodeClicks",c);
 
-  if(c<=2){ window.open(adLink,"_blank"); return; }
+  if(c<=2){
+    window.open(adLink,"_blank");
+    return;
+  }
+
   if(c>=3) sessionStorage.setItem("episodeClicks",0);
 
   if(videoUrl.includes("youtube.com/watch")){
@@ -219,11 +265,30 @@ function closeModal(){
   videoModal.style.display="none";
 }
 
-// links
-moviesLink.onclick=e=>{e.preventDefault();location.href="more.html?type=فيلم";}
-seriesLink.onclick=e=>{e.preventDefault();location.href="more.html?type=مسلسل";}
-schedulink.onclick=e=>{e.preventDefault();location.href="more.html?type=ملخّص";}
+
+/* ===== روابط الهيدر ===== */
+
+const moviesLink = document.getElementById("moviesLink");
+const seriesLink = document.getElementById("seriesLink");
+const schedulink = document.getElementById("schedulink");
+
+moviesLink.onclick=e=>{
+  e.preventDefault();
+  location.href="more.html?type=فيلم";
+}
+
+seriesLink.onclick=e=>{
+  e.preventDefault();
+  location.href="more.html?type=مسلسل";
+}
+
+schedulink.onclick=e=>{
+  e.preventDefault();
+  location.href="more.html?type=ملخّص";
+}
+
 </script>
+
 
 </body>
 </html>
